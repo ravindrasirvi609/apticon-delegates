@@ -1,13 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { CommitteeScreen } from '@/screens/committee';
 
 export default function CommitteeRoute() {
-  return (
-    <View style={styles.container}>
-      <Text>Committee</Text>
-    </View>
-  );
+  return <CommitteeScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-});
