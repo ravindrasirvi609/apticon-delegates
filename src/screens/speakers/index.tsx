@@ -1,11 +1,13 @@
 import { Mic } from 'lucide-react-native';
 import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 import { Badge } from '@/components/ui/badge';
 import { colors, fontFamily, fontSize, spacing } from '@/theme';
 
 export function SpeakersScreen() {
   return (
     <View style={styles.screen}>
+      <StatusBar style="dark" />
       <View style={styles.iconWrap}>
         <Mic color={colors.primary[700]} size={40} />
       </View>

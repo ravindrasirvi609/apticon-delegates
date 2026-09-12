@@ -1,5 +1,7 @@
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { MapPin } from 'lucide-react-native';
+import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VENUE, TRANSPORT, HOTELS, CUISINE, RAIPUR_PLACES } from '@/data/venue';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -14,10 +16,13 @@ function openInMaps() {
 }
 
 export function VenueScreen() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.screen} contentContainerStyle={[styles.content, { paddingTop: spacing.lg + insets.top }]}>
+      <StatusBar style="dark" />
       <View style={styles.header}>
-        <Badge>Venue & Travel</Badge>
+        <Badge style={{ alignSelf: 'flex-start' }}>Venue & Travel</Badge>
         <Text style={styles.title}>{VENUE.name}</Text>
         <Text style={styles.address}>{VENUE.address}</Text>
       </View>

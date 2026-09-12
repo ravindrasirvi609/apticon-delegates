@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { StateBranch } from '@/data/committee';
@@ -8,6 +8,10 @@ import { MemberCard } from './member-card';
 export function StateAccordionRow({ branch, forceOpen }: { branch: StateBranch; forceOpen: boolean }) {
   const [manuallyOpen, setManuallyOpen] = useState(false);
   const isOpen = forceOpen || manuallyOpen;
+
+  useEffect(() => {
+    if (!forceOpen) setManuallyOpen(false);
+  }, [forceOpen]);
 
   return (
     <View style={styles.container}>

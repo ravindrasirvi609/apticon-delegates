@@ -1,5 +1,7 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CalendarDays, MapPin, Mic, Users } from 'lucide-react-native';
+import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EVENT, STATS } from '@/data/event';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -9,9 +11,12 @@ import { CountdownRow } from './countdown-row';
 import { QuickNavCard } from './quick-nav-card';
 
 export function HomeScreen() {
+  const insets = useSafeAreaInsets();
+
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
-      <View style={styles.hero}>
+      <StatusBar style="light" />
+      <View style={[styles.hero, { paddingTop: spacing['3xl'] + insets.top }]}>
         <Image source={require('../../../assets/brand/apticon-logo.png')} style={styles.logo} resizeMode="contain" />
         <Badge>{EVENT.edition}</Badge>
         <Text style={styles.title}>{EVENT.name}</Text>

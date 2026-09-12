@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SCHEDULE_DAY1, SCHEDULE_DAY2, SESSION_COLORS, type SessionType } from '@/data/schedule';
 import { Badge } from '@/components/ui/badge';
 import { TypeChip } from '@/components/ui/type-chip';
@@ -15,11 +17,13 @@ const DAYS = [
 export function ScheduleScreen() {
   const [activeDay, setActiveDay] = useState('day1');
   const day = DAYS.find((d) => d.key === activeDay) ?? DAYS[0];
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.screen}>
-      <View style={styles.header}>
-        <Badge>Program</Badge>
+      <StatusBar style="dark" />
+      <View style={[styles.header, { paddingTop: spacing['2xl'] + insets.top }]}>
+        <Badge style={{ alignSelf: 'flex-start' }}>Program</Badge>
         <Text style={styles.title}>Conference Schedule</Text>
       </View>
       <DayToggle options={DAYS} active={activeDay} onChange={setActiveDay} />

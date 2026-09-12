@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PINNED_GROUPS, STATE_BRANCHES } from '@/data/committee';
 import { memberMatches, filterStateBranches } from '@/utils/committee-search';
 import { colors, fontFamily, fontSize, spacing } from '@/theme';
@@ -10,6 +12,7 @@ import { StateAccordionRow } from './state-accordion-row';
 export function CommitteeScreen() {
   const [query, setQuery] = useState('');
   const trimmedQuery = query.trim();
+  const insets = useSafeAreaInsets();
 
   const filteredGroups = useMemo(
     () =>
@@ -27,7 +30,8 @@ export function CommitteeScreen() {
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.title}>Organizing Committee</Text>
+      <StatusBar style="dark" />
+      <Text style={[styles.title, { marginTop: spacing['2xl'] + insets.top }]}>Organizing Committee</Text>
       <SearchBar value={query} onChange={setQuery} />
       <FlatList
         data={filteredBranches}
@@ -47,7 +51,7 @@ export function CommitteeScreen() {
             <Text style={styles.groupTitle}>State APTI Branches</Text>
           </View>
         }
-        renderItem={({ item }) => <StateAccordionRow branch={item} forceOpen={trimmedQuery.length > 0} />}
+        renderItem={({ item }) => <StateAccordionRow branch={item} forceOpen={trimmedQuery.length >= 2} />}
         ListEmptyComponent={
           trimmedQuery && filteredGroups.length === 0 ? (
             <Text style={styles.empty}>No committee members match "{trimmedQuery}".</Text>
