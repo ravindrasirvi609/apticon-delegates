@@ -1,13 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { ScheduleScreen } from '@/screens/schedule';
 
 export default function ScheduleRoute() {
-  return (
-    <View style={styles.container}>
-      <Text>Schedule</Text>
-    </View>
-  );
+  return <ScheduleScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-});
