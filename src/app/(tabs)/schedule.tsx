@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Placeholder() {
+export default function ScheduleRoute() {
   return (
     <View style={styles.container}>
-      <Text>APTICON 2026</Text>
+      <Text>Schedule</Text>
     </View>
   );
 }
