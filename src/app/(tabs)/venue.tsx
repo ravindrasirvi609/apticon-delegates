@@ -1,13 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { VenueScreen } from '@/screens/venue';
 
 export default function VenueRoute() {
-  return (
-    <View style={styles.container}>
-      <Text>Venue</Text>
-    </View>
-  );
+  return <VenueScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-});
