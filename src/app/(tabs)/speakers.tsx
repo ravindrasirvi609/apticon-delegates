@@ -1,13 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { SpeakersScreen } from '@/screens/speakers';
 
 export default function SpeakersRoute() {
-  return (
-    <View style={styles.container}>
-      <Text>Speakers</Text>
-    </View>
-  );
+  return <SpeakersScreen />;
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-});
