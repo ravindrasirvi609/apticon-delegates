@@ -3,6 +3,9 @@ import { CalendarDays, MapPin, Mic, Users } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EVENT, STATS } from '@/data/event';
+import { useRemoteData } from '@/hooks/use-remote-data';
+import { isValidEventData } from '@/utils/remote-validators';
+import type { EventData } from '@/types/remote-content';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Divider } from '@/components/ui/divider';
@@ -10,23 +13,27 @@ import { colors, fontFamily, fontSize, spacing } from '@/theme';
 import { CountdownRow } from './countdown-row';
 import { QuickNavCard } from './quick-nav-card';
 
+const EVENT_FALLBACK: EventData = { event: EVENT, stats: STATS };
+
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const { event, stats } = useRemoteData('event.json', EVENT_FALLBACK, isValidEventData);
+  const startDate = typeof event.startDate === 'string' ? new Date(event.startDate) : event.startDate;
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
       <StatusBar style="light" />
       <View style={[styles.hero, { paddingTop: spacing['3xl'] + insets.top }]}>
         <Image source={require('../../../assets/brand/apticon-logo.png')} style={styles.logo} resizeMode="contain" />
-        <Badge>{EVENT.edition}</Badge>
-        <Text style={styles.title}>{EVENT.name}</Text>
-        <Text style={styles.theme}>{EVENT.theme}</Text>
-        <Text style={styles.dates}>{EVENT.dateDisplay} · {EVENT.venueName}</Text>
-        <CountdownRow target={EVENT.startDate} />
+        <Badge>{event.edition}</Badge>
+        <Text style={styles.title}>{event.name}</Text>
+        <Text style={styles.theme}>{event.theme}</Text>
+        <Text style={styles.dates}>{event.dateDisplay} · {event.venueName}</Text>
+        <CountdownRow target={startDate} />
       </View>
 
       <View style={styles.statsRow}>
-        {STATS.map((stat) => (
+        {stats.map((stat) => (
           <View key={stat.label} style={styles.stat}>
             <Text style={styles.statValue}>{stat.value}</Text>
             <Text style={styles.statLabel}>{stat.label}</Text>
@@ -46,7 +53,7 @@ export function HomeScreen() {
 
       <Card style={styles.hostCard}>
         <Text style={styles.hostTitle}>Hosted by</Text>
-        <Text style={styles.hostBody}>{EVENT.host}, in partnership with {EVENT.partner}.</Text>
+        <Text style={styles.hostBody}>{event.host}, in partnership with {event.partner}.</Text>
       </Card>
     </ScrollView>
   );

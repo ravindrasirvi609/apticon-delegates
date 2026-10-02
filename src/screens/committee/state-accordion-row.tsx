@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react-native';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import type { StateBranch } from '@/data/committee';
+import type { RemoteStateBranch } from '@/types/remote-content';
 import { colors, fontFamily, fontSize, spacing } from '@/theme';
 import { MemberCard } from './member-card';
 
-export function StateAccordionRow({ branch, forceOpen }: { branch: StateBranch; forceOpen: boolean }) {
+export function StateAccordionRow({ branch, forceOpen }: { branch: RemoteStateBranch; forceOpen: boolean }) {
   const [manuallyOpen, setManuallyOpen] = useState(false);
   const isOpen = forceOpen || manuallyOpen;
 

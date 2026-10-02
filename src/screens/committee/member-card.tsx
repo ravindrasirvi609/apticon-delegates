@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { User } from 'lucide-react-native';
-import type { CommitteeMember } from '@/data/committee';
+import type { RemoteCommitteeMember } from '@/types/remote-content';
 import { GradientBanner } from '@/components/ui/gradient-banner';
 import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
 
-export function MemberCard({ member, gradient }: { member: CommitteeMember; gradient: [string, string] }) {
+export function MemberCard({ member, gradient }: { member: RemoteCommitteeMember; gradient: [string, string] }) {
   const [failed, setFailed] = useState(false);
+  const imageSource = typeof member.image === 'string' ? { uri: member.image } : member.image;
 
   return (
     <View style={styles.card}>
       <GradientBanner colors={gradient} height={48} />
       <View style={styles.avatarWrap}>
-        {member.image && !failed ? (
-          <Image source={member.image} style={styles.avatar} onError={() => setFailed(true)} />
+        {imageSource && !failed ? (
+          <Image source={imageSource} style={styles.avatar} onError={() => setFailed(true)} />
         ) : (
           <View style={[styles.avatar, styles.avatarFallback, { backgroundColor: gradient[0] }]}>
             <User color={colors.white} size={22} />

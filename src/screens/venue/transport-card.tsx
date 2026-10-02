@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
-import type { TransportOption } from '@/data/venue';
+import type { RemoteTransportOption } from '@/types/remote-content';
+import { resolveIcon } from '@/utils/icon-map';
 import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
 
-export function TransportCard({ option }: { option: TransportOption }) {
-  const Icon = option.icon;
+export function TransportCard({ option }: { option: RemoteTransportOption }) {
+  const Icon = typeof option.icon === 'string' ? resolveIcon(option.icon) : option.icon;
   return (
     <View style={styles.card}>
       <View style={styles.iconWrap}>

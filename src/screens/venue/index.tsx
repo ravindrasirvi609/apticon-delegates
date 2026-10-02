@@ -3,6 +3,9 @@ import { MapPin } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VENUE, TRANSPORT, HOTELS, CUISINE, RAIPUR_PLACES } from '@/data/venue';
+import { useRemoteData } from '@/hooks/use-remote-data';
+import { isValidVenueData } from '@/utils/remote-validators';
+import type { VenueData } from '@/types/remote-content';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Divider } from '@/components/ui/divider';
@@ -10,28 +13,37 @@ import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
 import { TransportCard } from './transport-card';
 import { PlaceCard } from './place-card';
 
-function openInMaps() {
-  const url = `https://www.google.com/maps/search/?api=1&query=${VENUE.lat},${VENUE.lng}`;
+const VENUE_FALLBACK: VenueData = {
+  venue: VENUE,
+  transport: TRANSPORT,
+  hotels: HOTELS,
+  cuisine: CUISINE,
+  raipurPlaces: RAIPUR_PLACES,
+};
+
+function openInMaps(lat: number, lng: number) {
+  const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
   Linking.openURL(url);
 }
 
 export function VenueScreen() {
   const insets = useSafeAreaInsets();
+  const { venue, transport, hotels, cuisine, raipurPlaces } = useRemoteData('venue.json', VENUE_FALLBACK, isValidVenueData);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={[styles.content, { paddingTop: spacing.lg + insets.top }]}>
       <StatusBar style="dark" />
       <View style={styles.header}>
         <Badge style={{ alignSelf: 'flex-start' }}>Venue & Travel</Badge>
-        <Text style={styles.title}>{VENUE.name}</Text>
-        <Text style={styles.address}>{VENUE.address}</Text>
+        <Text style={styles.title}>{venue.name}</Text>
+        <Text style={styles.address}>{venue.address}</Text>
       </View>
 
       <Card style={styles.venueCard}>
-        {VENUE.features.map((feature) => (
+        {venue.features.map((feature) => (
           <Text key={feature} style={styles.feature}>• {feature}</Text>
         ))}
-        <Pressable style={styles.mapsButton} onPress={openInMaps}>
+        <Pressable style={styles.mapsButton} onPress={() => openInMaps(venue.lat, venue.lng)}>
           <MapPin color={colors.white} size={16} />
           <Text style={styles.mapsButtonLabel}>Open in Google Maps</Text>
         </Pressable>
@@ -39,7 +51,7 @@ export function VenueScreen() {
 
       <Text style={styles.sectionTitle}>Nearby Hotels</Text>
       <Card>
-        {HOTELS.map((hotel) => (
+        {hotels.map((hotel) => (
           <View key={hotel.name} style={styles.hotelRow}>
             <View style={styles.hotelInfo}>
               <Text style={styles.hotelName}>{hotel.name}</Text>
@@ -57,7 +69,7 @@ export function VenueScreen() {
 
       <Text style={styles.sectionTitle}>How to Reach Raipur</Text>
       <View style={styles.list}>
-        {TRANSPORT.map((option) => (
+        {transport.map((option) => (
           <TransportCard key={option.label} option={option} />
         ))}
       </View>
@@ -66,7 +78,7 @@ export function VenueScreen() {
 
       <Text style={styles.sectionTitle}>Explore Raipur & Chhattisgarh</Text>
       <View style={styles.list}>
-        {RAIPUR_PLACES.map((place) => (
+        {raipurPlaces.map((place) => (
           <PlaceCard key={place.name} place={place} />
         ))}
       </View>
@@ -75,7 +87,7 @@ export function VenueScreen() {
 
       <Text style={styles.sectionTitle}>Taste of Chhattisgarh</Text>
       <View style={styles.cuisineGrid}>
-        {CUISINE.map((item) => (
+        {cuisine.map((item) => (
           <View key={item.name} style={styles.cuisineCard}>
             <Text style={styles.cuisineIcon}>{item.icon}</Text>
             <Text style={styles.cuisineName}>{item.name}</Text>

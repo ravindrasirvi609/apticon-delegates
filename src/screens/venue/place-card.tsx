@@ -1,11 +1,12 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
-import type { RaipurPlace } from '@/data/venue';
+import type { RemoteRaipurPlace } from '@/types/remote-content';
 import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
 
-export function PlaceCard({ place }: { place: RaipurPlace }) {
+export function PlaceCard({ place }: { place: RemoteRaipurPlace }) {
+  const imageSource = typeof place.image === 'string' ? { uri: place.image } : place.image;
   return (
     <View style={styles.card}>
-      <Image source={place.image} style={styles.image} resizeMode="cover" />
+      <Image source={imageSource} style={styles.image} resizeMode="cover" />
       <View style={styles.body}>
         <Text style={styles.name}>{place.icon} {place.name}</Text>
         <Text style={styles.description}>{place.description}</Text>

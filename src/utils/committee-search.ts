@@ -14,7 +14,12 @@ export interface StateBranch {
   members: CommitteeMember[];
 }
 
-export function memberMatches(member: CommitteeMember, query: string): boolean {
+// Only the fields actually used for matching — kept generic so remote-fetched
+// member/branch shapes (which widen `image` to allow a plain URL string) can
+// reuse this logic without a cast. See `src/types/remote-content.ts`.
+type SearchableMember = Pick<CommitteeMember, 'name' | 'role' | 'designation' | 'institution'>;
+
+export function memberMatches<M extends SearchableMember>(member: M, query: string): boolean {
   const q = query.trim().toLowerCase();
   if (!q) return true;
   return [member.name, member.role, member.designation, member.institution]
@@ -22,7 +27,10 @@ export function memberMatches(member: CommitteeMember, query: string): boolean {
     .some((field) => field.toLowerCase().includes(q));
 }
 
-export function filterStateBranches(branches: StateBranch[], query: string): StateBranch[] {
+export function filterStateBranches<M extends SearchableMember, B extends { state: string; members: M[] }>(
+  branches: B[],
+  query: string
+): B[] {
   const q = query.trim().toLowerCase();
   if (!q) return branches;
   return branches

@@ -4,28 +4,36 @@ import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PINNED_GROUPS, STATE_BRANCHES } from '@/data/committee';
 import { memberMatches, filterStateBranches } from '@/utils/committee-search';
+import { useRemoteData } from '@/hooks/use-remote-data';
+import { isValidCommitteeData } from '@/utils/remote-validators';
+import type { CommitteeData } from '@/types/remote-content';
 import { colors, fontFamily, fontSize, spacing } from '@/theme';
 import { SearchBar } from './search-bar';
 import { MemberCard } from './member-card';
 import { StateAccordionRow } from './state-accordion-row';
 
+const COMMITTEE_FALLBACK: CommitteeData = { pinnedGroups: PINNED_GROUPS, stateBranches: STATE_BRANCHES };
+
 export function CommitteeScreen() {
   const [query, setQuery] = useState('');
   const trimmedQuery = query.trim();
   const insets = useSafeAreaInsets();
+  const { pinnedGroups, stateBranches } = useRemoteData('committee.json', COMMITTEE_FALLBACK, isValidCommitteeData);
 
   const filteredGroups = useMemo(
     () =>
-      PINNED_GROUPS.map((group) => ({
-        ...group,
-        members: group.members.filter((m) => memberMatches(m, trimmedQuery)),
-      })).filter((group) => group.members.length > 0),
-    [trimmedQuery]
+      pinnedGroups
+        .map((group) => ({
+          ...group,
+          members: group.members.filter((m) => memberMatches(m, trimmedQuery)),
+        }))
+        .filter((group) => group.members.length > 0),
+    [pinnedGroups, trimmedQuery]
   );
 
   const filteredBranches = useMemo(
-    () => filterStateBranches(STATE_BRANCHES, trimmedQuery),
-    [trimmedQuery]
+    () => filterStateBranches(stateBranches, trimmedQuery),
+    [stateBranches, trimmedQuery]
   );
 
   return (

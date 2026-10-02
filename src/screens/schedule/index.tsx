@@ -3,21 +3,27 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SCHEDULE_DAY1, SCHEDULE_DAY2, SESSION_COLORS, type SessionType } from '@/data/schedule';
+import { useRemoteData } from '@/hooks/use-remote-data';
+import { isValidScheduleData } from '@/utils/remote-validators';
+import type { ScheduleData } from '@/types/remote-content';
 import { Badge } from '@/components/ui/badge';
 import { TypeChip } from '@/components/ui/type-chip';
 import { colors, fontFamily, fontSize, spacing } from '@/theme';
 import { DayToggle } from './day-toggle';
 import { SessionCard } from './session-card';
 
-const DAYS = [
-  { key: 'day1', label: 'Day 1 — 24 Oct', sessions: SCHEDULE_DAY1 },
-  { key: 'day2', label: 'Day 2 — 25 Oct', sessions: SCHEDULE_DAY2 },
-];
+const SCHEDULE_FALLBACK: ScheduleData = { day1: SCHEDULE_DAY1, day2: SCHEDULE_DAY2 };
 
 export function ScheduleScreen() {
   const [activeDay, setActiveDay] = useState('day1');
-  const day = DAYS.find((d) => d.key === activeDay) ?? DAYS[0];
   const insets = useSafeAreaInsets();
+  const schedule = useRemoteData('schedule.json', SCHEDULE_FALLBACK, isValidScheduleData);
+
+  const DAYS = [
+    { key: 'day1', label: 'Day 1 — 24 Oct', sessions: schedule.day1 },
+    { key: 'day2', label: 'Day 2 — 25 Oct', sessions: schedule.day2 },
+  ];
+  const day = DAYS.find((d) => d.key === activeDay) ?? DAYS[0];
 
   return (
     <View style={styles.screen}>
