@@ -1,16 +1,19 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import type { RemoteRaipurPlace } from '@/types/remote-content';
-import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
+import { colors, elevation, fontFamily, fontSize, radius, spacing } from '@/theme';
 
 export function PlaceCard({ place }: { place: RemoteRaipurPlace }) {
   const imageSource = typeof place.image === 'string' ? { uri: place.image } : place.image;
   return (
     <View style={styles.card}>
-      <Image source={imageSource} style={styles.image} resizeMode="cover" />
-      <View style={styles.body}>
-        <Text style={styles.name}>{place.icon} {place.name}</Text>
-        <Text style={styles.description}>{place.description}</Text>
+      <View style={styles.imageWrap}>
+        <Image source={imageSource} style={styles.image} resizeMode="cover" />
+        <LinearGradient colors={['transparent', colors.overlay]} style={styles.caption}>
+          <Text style={styles.name}>{place.icon} {place.name}</Text>
+        </LinearGradient>
       </View>
+      <Text style={styles.description}>{place.description}</Text>
     </View>
   );
 }
@@ -20,13 +23,21 @@ const styles = StyleSheet.create({
     flexBasis: '100%',
     backgroundColor: colors.white,
     borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.surface[200],
     overflow: 'hidden',
     marginBottom: spacing.md,
+    ...elevation.sm,
   },
-  image: { width: '100%', height: 160 },
-  body: { padding: spacing.md, gap: spacing.xs },
-  name: { fontFamily: fontFamily.sansSemiBold, fontSize: fontSize.base, color: colors.text.dark },
-  description: { fontFamily: fontFamily.sans, fontSize: fontSize.sm, color: colors.text.muted, lineHeight: 20 },
+  imageWrap: { width: '100%', height: 160 },
+  image: { width: '100%', height: '100%' },
+  caption: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing['2xl'],
+    paddingBottom: spacing.sm,
+  },
+  name: { fontFamily: fontFamily.sansSemiBold, fontSize: fontSize.base, color: colors.white },
+  description: { fontFamily: fontFamily.sans, fontSize: fontSize.sm, color: colors.text.muted, lineHeight: 20, padding: spacing.md },
 });

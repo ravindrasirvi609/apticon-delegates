@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Search } from 'lucide-react-native';
 import { PINNED_GROUPS, STATE_BRANCHES } from '@/data/committee';
 import { memberMatches, filterStateBranches } from '@/utils/committee-search';
 import { useRemoteData } from '@/hooks/use-remote-data';
 import { isValidCommitteeData } from '@/utils/remote-validators';
 import type { CommitteeData } from '@/types/remote-content';
+import { Screen } from '@/components/ui/screen';
+import { ScreenHeader } from '@/components/ui/screen-header';
+import { EmptyState } from '@/components/ui/empty-state';
 import { colors, fontFamily, fontSize, spacing } from '@/theme';
 import { SearchBar } from './search-bar';
 import { MemberCard } from './member-card';
@@ -17,7 +20,6 @@ const COMMITTEE_FALLBACK: CommitteeData = { pinnedGroups: PINNED_GROUPS, stateBr
 export function CommitteeScreen() {
   const [query, setQuery] = useState('');
   const trimmedQuery = query.trim();
-  const insets = useSafeAreaInsets();
   const { pinnedGroups, stateBranches } = useRemoteData('committee.json', COMMITTEE_FALLBACK, isValidCommitteeData);
 
   const filteredGroups = useMemo(
@@ -36,10 +38,13 @@ export function CommitteeScreen() {
     [stateBranches, trimmedQuery]
   );
 
+  const hasAnyResults = filteredGroups.length > 0 || filteredBranches.length > 0;
+
   return (
-    <View style={styles.screen}>
+    <Screen>
       <StatusBar style="dark" />
-      <Text style={[styles.title, { marginTop: spacing['2xl'] + insets.top }]}>Organizing Committee</Text>
+      <ScreenHeader eyebrow="Committee" title="Organizing Committee" />
+      <View style={styles.searchSpacer} />
       <SearchBar value={query} onChange={setQuery} />
       <FlatList
         data={filteredBranches}
@@ -56,31 +61,29 @@ export function CommitteeScreen() {
                 </View>
               </View>
             ))}
-            <Text style={styles.groupTitle}>State APTI Branches</Text>
+            {filteredBranches.length > 0 ? <Text style={styles.groupTitle}>State APTI Branches</Text> : null}
           </View>
         }
         renderItem={({ item }) => <StateAccordionRow branch={item} forceOpen={trimmedQuery.length >= 2} />}
         ListEmptyComponent={
-          trimmedQuery && filteredGroups.length === 0 ? (
-            <Text style={styles.empty}>No committee members match "{trimmedQuery}".</Text>
+          trimmedQuery && !hasAnyResults ? (
+            <View style={styles.empty}>
+              <EmptyState
+                icon={Search}
+                title="No matches found"
+                body={`No committee members match "${trimmedQuery}". Try a different name, state, or institution.`}
+              />
+            </View>
           ) : null
         }
         contentContainerStyle={styles.listContent}
       />
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.surface[50] },
-  title: {
-    fontFamily: fontFamily.display,
-    fontSize: fontSize.xl,
-    color: colors.text.dark,
-    marginHorizontal: spacing.lg,
-    marginTop: spacing['2xl'],
-    marginBottom: spacing.md,
-  },
+  searchSpacer: { height: spacing.md },
   listContent: { paddingBottom: spacing['3xl'] },
   pinnedGroup: { marginBottom: spacing.xl },
   groupTitle: {
@@ -93,5 +96,5 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md, paddingHorizontal: spacing.lg, paddingTop: spacing.xl },
-  empty: { textAlign: 'center', fontFamily: fontFamily.sans, fontSize: fontSize.base, color: colors.text.muted, marginTop: spacing.xl },
+  empty: { marginTop: spacing.xl, paddingHorizontal: spacing.xl },
 });

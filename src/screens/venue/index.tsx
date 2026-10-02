@@ -1,15 +1,16 @@
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, StyleSheet, Text, View } from 'react-native';
 import { MapPin } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { VENUE, TRANSPORT, HOTELS, CUISINE, RAIPUR_PLACES } from '@/data/venue';
 import { useRemoteData } from '@/hooks/use-remote-data';
 import { isValidVenueData } from '@/utils/remote-validators';
 import type { VenueData } from '@/types/remote-content';
-import { Badge } from '@/components/ui/badge';
+import { Screen } from '@/components/ui/screen';
+import { ScreenHeader } from '@/components/ui/screen-header';
 import { Card } from '@/components/ui/card';
 import { Divider } from '@/components/ui/divider';
-import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
+import { Button } from '@/components/ui/button';
+import { colors, elevation, fontFamily, fontSize, radius, spacing } from '@/theme';
 import { TransportCard } from './transport-card';
 import { PlaceCard } from './place-card';
 
@@ -27,26 +28,23 @@ function openInMaps(lat: number, lng: number) {
 }
 
 export function VenueScreen() {
-  const insets = useSafeAreaInsets();
   const { venue, transport, hotels, cuisine, raipurPlaces } = useRemoteData('venue.json', VENUE_FALLBACK, isValidVenueData);
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={[styles.content, { paddingTop: spacing.lg + insets.top }]}>
+    <Screen scroll contentStyle={styles.content}>
       <StatusBar style="dark" />
-      <View style={styles.header}>
-        <Badge style={{ alignSelf: 'flex-start' }}>Venue & Travel</Badge>
-        <Text style={styles.title}>{venue.name}</Text>
-        <Text style={styles.address}>{venue.address}</Text>
-      </View>
+      <ScreenHeader eyebrow="Venue & Travel" title={venue.name} subtitle={venue.address} />
 
       <Card style={styles.venueCard}>
         {venue.features.map((feature) => (
-          <Text key={feature} style={styles.feature}>• {feature}</Text>
+          <View key={feature} style={styles.featureRow}>
+            <View style={styles.featureDot} />
+            <Text style={styles.feature}>{feature}</Text>
+          </View>
         ))}
-        <Pressable style={styles.mapsButton} onPress={() => openInMaps(venue.lat, venue.lng)}>
-          <MapPin color={colors.white} size={16} />
-          <Text style={styles.mapsButtonLabel}>Open in Google Maps</Text>
-        </Pressable>
+        <Button icon={MapPin} onPress={() => openInMaps(venue.lat, venue.lng)}>
+          Open in Google Maps
+        </Button>
       </Card>
 
       <Text style={styles.sectionTitle}>Nearby Hotels</Text>
@@ -58,7 +56,9 @@ export function VenueScreen() {
               <Text style={styles.hotelArea}>{hotel.area}</Text>
             </View>
             <View style={styles.hotelMeta}>
-              <Text style={styles.hotelDistance}>{hotel.distance}</Text>
+              <View style={styles.distancePill}>
+                <Text style={styles.hotelDistance}>{hotel.distance}</Text>
+              </View>
               <Text style={styles.hotelStars}>{'★'.repeat(hotel.stars)}</Text>
             </View>
           </View>
@@ -95,29 +95,16 @@ export function VenueScreen() {
           </View>
         ))}
       </View>
-    </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.surface[50] },
-  content: { padding: spacing.lg, paddingBottom: spacing['3xl'], gap: spacing.md },
-  header: { gap: spacing.sm, marginBottom: spacing.sm },
-  title: { fontFamily: fontFamily.display, fontSize: fontSize.xl, color: colors.text.dark },
-  address: { fontFamily: fontFamily.sans, fontSize: fontSize.sm, color: colors.text.muted },
-  venueCard: { gap: spacing.xs },
-  feature: { fontFamily: fontFamily.sans, fontSize: fontSize.sm, color: colors.text.muted },
-  mapsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.sm,
-    backgroundColor: colors.primary[700],
-    borderRadius: radius.full,
-    paddingVertical: spacing.sm,
-    marginTop: spacing.md,
-  },
-  mapsButtonLabel: { fontFamily: fontFamily.sansSemiBold, fontSize: fontSize.sm, color: colors.white },
+  content: { paddingHorizontal: spacing.lg, paddingBottom: spacing['3xl'], gap: spacing.md },
+  venueCard: { gap: spacing.sm, marginTop: spacing.lg },
+  featureRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  featureDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.accent[500] },
+  feature: { fontFamily: fontFamily.sans, fontSize: fontSize.sm, color: colors.text.muted, flex: 1 },
   sectionTitle: { fontFamily: fontFamily.sansBold, fontSize: fontSize.base, color: colors.text.dark, marginTop: spacing.sm },
   hotelRow: {
     flexDirection: 'row',
@@ -129,7 +116,13 @@ const styles = StyleSheet.create({
   hotelInfo: { flex: 1 },
   hotelName: { fontFamily: fontFamily.sansMedium, fontSize: fontSize.sm, color: colors.text.dark },
   hotelArea: { fontFamily: fontFamily.sans, fontSize: fontSize.xs, color: colors.text.muted },
-  hotelMeta: { alignItems: 'flex-end' },
+  hotelMeta: { alignItems: 'flex-end', gap: 2 },
+  distancePill: {
+    backgroundColor: colors.primary[100],
+    borderRadius: radius.full,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 1,
+  },
   hotelDistance: { fontFamily: fontFamily.sansSemiBold, fontSize: fontSize.xs, color: colors.primary[700] },
   hotelStars: { fontFamily: fontFamily.sans, fontSize: 10, color: colors.text.muted },
   list: { gap: 0 },
@@ -139,11 +132,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: colors.white,
     borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.surface[200],
     padding: spacing.sm,
     alignItems: 'center',
     gap: 2,
+    ...elevation.sm,
   },
   cuisineIcon: { fontSize: 24 },
   cuisineName: { fontFamily: fontFamily.sansSemiBold, fontSize: fontSize.xs, color: colors.text.dark },

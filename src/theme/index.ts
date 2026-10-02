@@ -1,3 +1,3 @@
 export { colors } from './colors';
-export { fontFamily, fontSize } from './typography';
-export { spacing, radius } from './spacing';
+export { fontFamily, fontSize, textStyles } from './typography';
+export { spacing, radius, elevation, motion } from './spacing';

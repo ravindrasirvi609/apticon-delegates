@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useCountdown } from '@/hooks/use-countdown';
-import { colors, fontFamily, fontSize, spacing } from '@/theme';
+import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
 
 function Unit({ value, label }: { value: number; label: string }) {
   return (
@@ -19,7 +19,7 @@ export function CountdownRow({ target }: { target: Date }) {
   }
 
   return (
-    <View style={styles.row}>
+    <View style={styles.row} accessibilityLabel={`Countdown: ${days} days, ${hours} hours, ${minutes} minutes`}>
       <Unit value={days} label="Days" />
       <Unit value={hours} label="Hours" />
       <Unit value={minutes} label="Mins" />
@@ -28,8 +28,14 @@ export function CountdownRow({ target }: { target: Date }) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: spacing.lg, justifyContent: 'center' },
-  unit: { alignItems: 'center', minWidth: 56 },
+  row: { flexDirection: 'row', gap: spacing.sm, justifyContent: 'center' },
+  unit: {
+    alignItems: 'center',
+    minWidth: 64,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.lg,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+  },
   value: { fontFamily: fontFamily.displayBlack, fontSize: fontSize['2xl'], color: colors.white },
   label: { fontFamily: fontFamily.sansMedium, fontSize: fontSize.xs, color: colors.accent[200], textTransform: 'uppercase' },
   live: { fontFamily: fontFamily.display, fontSize: fontSize.lg, color: colors.white, textAlign: 'center' },

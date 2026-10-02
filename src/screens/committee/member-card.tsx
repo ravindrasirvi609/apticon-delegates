@@ -1,28 +1,24 @@
-import { useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
-import { User } from 'lucide-react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import type { RemoteCommitteeMember } from '@/types/remote-content';
 import { GradientBanner } from '@/components/ui/gradient-banner';
-import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
+import { Avatar } from '@/components/ui/avatar';
+import { colors, elevation, fontFamily, fontSize, radius, spacing } from '@/theme';
+
+const AVATAR_SIZE = 64;
 
 export function MemberCard({ member, gradient }: { member: RemoteCommitteeMember; gradient: [string, string] }) {
-  const [failed, setFailed] = useState(false);
-  const imageSource = typeof member.image === 'string' ? { uri: member.image } : member.image;
-
   return (
     <View style={styles.card}>
       <GradientBanner colors={gradient} height={48} />
       <View style={styles.avatarWrap}>
-        {imageSource && !failed ? (
-          <Image source={imageSource} style={styles.avatar} onError={() => setFailed(true)} />
-        ) : (
-          <View style={[styles.avatar, styles.avatarFallback, { backgroundColor: gradient[0] }]}>
-            <User color={colors.white} size={22} />
-          </View>
-        )}
+        <Avatar image={member.image} tint={gradient[0]} size={AVATAR_SIZE} />
       </View>
       <View style={styles.body}>
-        {member.role ? <Text style={styles.role}>{member.role}</Text> : null}
+        {member.role ? (
+          <View style={styles.roleTag}>
+            <Text style={styles.role}>{member.role}</Text>
+          </View>
+        ) : null}
         <Text style={styles.name}>{member.name}</Text>
         {member.designation ? <Text style={styles.meta}>{member.designation}</Text> : null}
         {member.institution ? (
@@ -33,30 +29,26 @@ export function MemberCard({ member, gradient }: { member: RemoteCommitteeMember
   );
 }
 
-const AVATAR_SIZE = 64;
-
 const styles = StyleSheet.create({
   card: {
     flexBasis: '47%',
     flexGrow: 1,
     backgroundColor: colors.white,
     borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.surface[200],
     overflow: 'hidden',
     alignItems: 'center',
     paddingBottom: spacing.md,
+    ...elevation.sm,
   },
   avatarWrap: { marginTop: -AVATAR_SIZE / 2, marginBottom: spacing.sm },
-  avatar: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
-    borderWidth: 3,
-    borderColor: colors.white,
+  body: { alignItems: 'center', paddingHorizontal: spacing.sm, gap: 4 },
+  roleTag: {
+    backgroundColor: colors.accent[100],
+    borderRadius: radius.full,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    marginBottom: 2,
   },
-  avatarFallback: { alignItems: 'center', justifyContent: 'center' },
-  body: { alignItems: 'center', paddingHorizontal: spacing.sm, gap: 2 },
   role: {
     fontFamily: fontFamily.sansBold,
     fontSize: 10,

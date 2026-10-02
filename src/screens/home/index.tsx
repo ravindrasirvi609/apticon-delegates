@@ -1,36 +1,41 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { CalendarDays, MapPin, Mic, Users } from 'lucide-react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { EVENT, STATS } from '@/data/event';
 import { useRemoteData } from '@/hooks/use-remote-data';
 import { isValidEventData } from '@/utils/remote-validators';
 import type { EventData } from '@/types/remote-content';
+import { Screen } from '@/components/ui/screen';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Divider } from '@/components/ui/divider';
-import { colors, fontFamily, fontSize, spacing } from '@/theme';
+import { colors, elevation, fontFamily, fontSize, radius, spacing, textStyles } from '@/theme';
 import { CountdownRow } from './countdown-row';
 import { QuickNavCard } from './quick-nav-card';
 
 const EVENT_FALLBACK: EventData = { event: EVENT, stats: STATS };
 
 export function HomeScreen() {
-  const insets = useSafeAreaInsets();
   const { event, stats } = useRemoteData('event.json', EVENT_FALLBACK, isValidEventData);
   const startDate = typeof event.startDate === 'string' ? new Date(event.startDate) : event.startDate;
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.content}>
+    <Screen scroll contentStyle={styles.content}>
       <StatusBar style="light" />
-      <View style={[styles.hero, { paddingTop: spacing['3xl'] + insets.top }]}>
+      <LinearGradient
+        colors={[colors.primary[900], colors.primary[700]]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.hero}
+      >
         <Image source={require('../../../assets/brand/apticon-logo.png')} style={styles.logo} resizeMode="contain" />
         <Badge>{event.edition}</Badge>
         <Text style={styles.title}>{event.name}</Text>
         <Text style={styles.theme}>{event.theme}</Text>
         <Text style={styles.dates}>{event.dateDisplay} · {event.venueName}</Text>
         <CountdownRow target={startDate} />
-      </View>
+      </LinearGradient>
 
       <View style={styles.statsRow}>
         {stats.map((stat) => (
@@ -55,28 +60,23 @@ export function HomeScreen() {
         <Text style={styles.hostTitle}>Hosted by</Text>
         <Text style={styles.hostBody}>{event.host}, in partnership with {event.partner}.</Text>
       </Card>
-    </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.surface[50] },
   content: { paddingBottom: spacing['3xl'] },
   hero: {
-    backgroundColor: colors.primary[900],
-    paddingTop: spacing['3xl'],
+    paddingTop: spacing.xl,
     paddingBottom: spacing.xl,
     paddingHorizontal: spacing.lg,
     alignItems: 'center',
     gap: spacing.sm,
+    borderBottomLeftRadius: radius.xl,
+    borderBottomRightRadius: radius.xl,
   },
   logo: { width: 96, height: 96, marginBottom: spacing.sm },
-  title: {
-    fontFamily: fontFamily.displayBlack,
-    fontSize: fontSize['3xl'],
-    color: colors.white,
-    textAlign: 'center',
-  },
+  title: { ...textStyles.display, textAlign: 'center' },
   theme: {
     fontFamily: fontFamily.sans,
     fontSize: fontSize.base,
@@ -95,10 +95,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: spacing.xl,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
+    gap: spacing.sm,
   },
-  stat: { alignItems: 'center' },
-  statValue: { fontFamily: fontFamily.display, fontSize: fontSize.xl, color: colors.primary[700] },
+  stat: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: colors.white,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xs,
+    ...elevation.sm,
+  },
+  statValue: { fontFamily: fontFamily.display, fontSize: fontSize.lg, color: colors.primary[700] },
   statLabel: { fontFamily: fontFamily.sans, fontSize: fontSize.xs, color: colors.text.muted, textAlign: 'center', marginTop: 2 },
   sectionTitle: {
     fontFamily: fontFamily.display,
