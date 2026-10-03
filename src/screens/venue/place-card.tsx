@@ -1,12 +1,13 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { RemoteRaipurPlace } from '@/types/remote-content';
 import { colors, elevation, fontFamily, fontSize, radius, spacing } from '@/theme';
 
 export function PlaceCard({ place }: { place: RemoteRaipurPlace }) {
+  const { width } = useWindowDimensions();
   const imageSource = typeof place.image === 'string' ? { uri: place.image } : place.image;
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, width >= 760 && styles.wideCard]}>
       <View style={styles.imageWrap}>
         <Image source={imageSource} style={styles.image} resizeMode="cover" />
         <LinearGradient colors={['transparent', colors.overlay]} style={styles.caption}>
@@ -27,6 +28,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     ...elevation.sm,
   },
+  wideCard: { flexBasis: '48%', flexGrow: 1 },
   imageWrap: { width: '100%', height: 160 },
   image: { width: '100%', height: '100%' },
   caption: {
