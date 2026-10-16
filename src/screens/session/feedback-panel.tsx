@@ -8,6 +8,7 @@ import { ApiError } from '@/services/api';
 import { fetchMyFeedback, saveFeedback, type SessionWindow } from '@/services/delegate-qa';
 import { colors, fontFamily, fontSize, radius, spacing, textStyles } from '@/theme';
 import { StarRating } from './star-rating';
+import { WindowNotice } from './window-notice';
 
 const MAX_COMMENT = 1000;
 
@@ -90,26 +91,33 @@ function FeedbackForm({ sessionId, token }: { sessionId: string; token: string }
     );
   }
 
-  const open = window?.open ?? false;
+  if (window && !window.open) {
+    // Not open (yet, or any more): no form to type into — say so, and show what was already sent.
+    return (
+      <View style={styles.stack}>
+        <WindowNotice window={window} what="Feedback" />
+        {hasSaved ? (
+          <Card style={styles.card}>
+            <Text style={styles.heading}>Your feedback</Text>
+            <StarRating value={rating} onChange={() => undefined} disabled />
+            {comment ? <Text style={styles.notice}>{comment}</Text> : null}
+          </Card>
+        ) : null}
+      </View>
+    );
+  }
 
   return (
     <Card style={styles.card}>
       <Text style={styles.heading}>How was this session?</Text>
-      {!open ? (
-        <Text style={styles.notice}>
-          {window?.reason === 'not_started'
-            ? 'Feedback opens once this session starts.'
-            : 'Feedback for this session is closed.'}
-        </Text>
-      ) : null}
 
-      <StarRating value={rating} onChange={setRating} disabled={!open || submitting} />
+      <StarRating value={rating} onChange={setRating} disabled={submitting} />
 
       <TextInput
-        style={[styles.input, !open && styles.inputDisabled]}
+        style={styles.input}
         value={comment}
         onChangeText={setComment}
-        editable={open && !submitting}
+        editable={!submitting}
         placeholder="Comments (optional)"
         placeholderTextColor={colors.text.faint}
         multiline
@@ -130,11 +138,9 @@ function FeedbackForm({ sessionId, token }: { sessionId: string; token: string }
         </Text>
       ) : null}
 
-      {open ? (
-        <Button icon={Send} disabled={submitting} onPress={() => void submit()}>
-          {submitting ? 'Saving…' : hasSaved ? 'Update feedback' : 'Submit feedback'}
-        </Button>
-      ) : null}
+      <Button icon={Send} disabled={submitting} onPress={() => void submit()}>
+        {submitting ? 'Saving…' : hasSaved ? 'Update feedback' : 'Submit feedback'}
+      </Button>
     </Card>
   );
 }
@@ -156,7 +162,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     color: colors.text.dark,
   },
-  inputDisabled: { opacity: 0.6 },
+  stack: { gap: spacing.lg },
   counter: { ...textStyles.caption, alignSelf: 'flex-end' },
   error: { fontFamily: fontFamily.sansMedium, fontSize: fontSize.sm, color: '#B91C1C' },
   success: { fontFamily: fontFamily.sansMedium, fontSize: fontSize.sm, color: '#047857' },

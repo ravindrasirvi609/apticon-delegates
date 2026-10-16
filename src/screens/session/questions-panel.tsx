@@ -13,6 +13,7 @@ import {
   type SessionWindow,
 } from '@/services/delegate-qa';
 import { colors, fontFamily, fontSize, radius, spacing, textStyles } from '@/theme';
+import { WindowNotice } from './window-notice';
 
 const MAX_QUESTION = 500;
 const MIN_QUESTION = 3;
@@ -111,67 +112,68 @@ function QuestionsForm({ sessionId, token }: { sessionId: string; token: string 
 
   return (
     <View style={styles.container}>
-      <Card style={styles.card}>
-        <Text style={styles.heading}>Ask a question</Text>
-        {!open ? (
-          <Text style={styles.notice}>
-            {window?.reason === 'not_started'
-              ? 'Questions open once this session starts.'
-              : 'Questions for this session are closed.'}
-          </Text>
-        ) : (
+      {window && !open ? (
+        // Not open (yet, or any more): say so instead of showing a form that ignores input.
+        <WindowNotice window={window} what="Questions" />
+      ) : (
+        <Card style={styles.card}>
+          <Text style={styles.heading}>Ask a question</Text>
           <Text style={styles.notice}>
             {remaining > 0
               ? `You can send ${remaining} more ${remaining === 1 ? 'question' : 'questions'} for this session.`
               : 'You have used all your questions for this session.'}
           </Text>
-        )}
 
-        <TextInput
-          style={[styles.input, !open && styles.inputDisabled]}
-          value={text}
-          onChangeText={setText}
-          editable={open && remaining > 0 && !submitting}
-          placeholder="Type your question for the speaker"
-          placeholderTextColor={colors.text.faint}
-          multiline
-          maxLength={MAX_QUESTION}
-          textAlignVertical="top"
-          accessibilityLabel="Your question"
-        />
-        <Text style={styles.counter}>
-          {text.length}/{MAX_QUESTION}
-        </Text>
+          {remaining > 0 ? (
+            <>
+              <TextInput
+                style={styles.input}
+                value={text}
+                onChangeText={setText}
+                editable={!submitting}
+                placeholder="Type your question for the speaker"
+                placeholderTextColor={colors.text.faint}
+                multiline
+                maxLength={MAX_QUESTION}
+                textAlignVertical="top"
+                accessibilityLabel="Your question"
+              />
+              <Text style={styles.counter}>
+                {text.length}/{MAX_QUESTION}
+              </Text>
 
-        <View style={styles.anonRow}>
-          <View style={styles.anonText}>
-            <Text style={styles.anonTitle}>Ask anonymously</Text>
-            <Text style={styles.anonHint}>Your name won’t be shown with the question.</Text>
-          </View>
-          <Switch
-            value={isAnonymous}
-            onValueChange={setIsAnonymous}
-            disabled={!open || submitting}
-            trackColor={{ true: colors.primary[600], false: colors.surface[300] }}
-            accessibilityLabel="Ask anonymously"
-          />
-        </View>
+              <View style={styles.anonRow}>
+                <View style={styles.anonText}>
+                  <Text style={styles.anonTitle}>Ask anonymously</Text>
+                  <Text style={styles.anonHint}>Your name won’t be shown with the question.</Text>
+                </View>
+                <Switch
+                  value={isAnonymous}
+                  onValueChange={setIsAnonymous}
+                  disabled={submitting}
+                  trackColor={{ true: colors.primary[600], false: colors.surface[300] }}
+                  accessibilityLabel="Ask anonymously"
+                />
+              </View>
+            </>
+          ) : null}
 
-        {message ? (
-          <Text
-            style={message.kind === 'error' ? styles.error : styles.success}
-            accessibilityRole={message.kind === 'error' ? 'alert' : undefined}
-          >
-            {message.text}
-          </Text>
-        ) : null}
+          {message ? (
+            <Text
+              style={message.kind === 'error' ? styles.error : styles.success}
+              accessibilityRole={message.kind === 'error' ? 'alert' : undefined}
+            >
+              {message.text}
+            </Text>
+          ) : null}
 
-        {open && remaining > 0 ? (
-          <Button icon={Send} disabled={submitting} onPress={() => void submit()}>
-            {submitting ? 'Sending…' : 'Send question'}
-          </Button>
-        ) : null}
-      </Card>
+          {remaining > 0 ? (
+            <Button icon={Send} disabled={submitting} onPress={() => void submit()}>
+              {submitting ? 'Sending…' : 'Send question'}
+            </Button>
+          ) : null}
+        </Card>
+      )}
 
       {questions.length > 0 ? (
         <View style={styles.list}>
@@ -209,7 +211,6 @@ const styles = StyleSheet.create({
     fontSize: fontSize.base,
     color: colors.text.dark,
   },
-  inputDisabled: { opacity: 0.6 },
   counter: { ...textStyles.caption, alignSelf: 'flex-end' },
   anonRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   anonText: { flex: 1 },
