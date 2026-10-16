@@ -1,28 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TextInput, View } from 'react-native';
-import { MessageSquareHeart, Send } from 'lucide-react-native';
+import { Send } from 'lucide-react-native';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useSession } from '@/hooks/use-session';
 import { ApiError } from '@/services/api';
 import { fetchMyFeedback, saveFeedback, type SessionWindow } from '@/services/delegate-qa';
 import { colors, fontFamily, fontSize, radius, spacing, textStyles } from '@/theme';
-import { LoginPrompt } from './login-prompt';
 import { StarRating } from './star-rating';
 
 const MAX_COMMENT = 1000;
 
 export function FeedbackPanel({ sessionId }: { sessionId: string }) {
   const { session } = useSession();
-  if (!session) {
-    return (
-      <LoginPrompt
-        icon={MessageSquareHeart}
-        title="Log in to give feedback"
-        body="Sign in with your registration QR and email to rate this session."
-      />
-    );
-  }
+  // Session screens are only reachable while logged in; null only while a logout is in flight.
+  if (!session) return null;
   return <FeedbackForm sessionId={sessionId} token={session.token} />;
 }
 
