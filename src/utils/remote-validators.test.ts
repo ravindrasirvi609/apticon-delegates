@@ -3,6 +3,7 @@ import {
   isValidCommitteeData,
   isValidVenueData,
   isValidEventData,
+  isValidSponsorsData,
 } from './remote-validators';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -13,6 +14,8 @@ const committeeJson = require('../../remote-data/committee.json');
 const venueJson = require('../../remote-data/venue.json');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const eventJson = require('../../remote-data/event.json');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const sponsorsJson = require('../../remote-data/sponsors.json');
 
 describe('isValidScheduleData', () => {
   it('accepts the real seeded schedule.json', () => {
@@ -37,6 +40,19 @@ describe('isValidScheduleData', () => {
     const { time, ...rest } = scheduleJson.day1[0];
     const bad = { ...scheduleJson, day1: [rest] };
     expect(isValidScheduleData(bad)).toBe(false);
+  });
+
+  it('rejects a session without an id or with a malformed id', () => {
+    const { id, ...noId } = scheduleJson.day1[0];
+    expect(isValidScheduleData({ ...scheduleJson, day1: [noId] })).toBe(false);
+    expect(
+      isValidScheduleData({ ...scheduleJson, day1: [{ ...scheduleJson.day1[0], id: 'session one' }] })
+    ).toBe(false);
+  });
+
+  it('rejects duplicate session ids', () => {
+    const dup = { ...scheduleJson, day1: [scheduleJson.day1[0], scheduleJson.day1[0]] };
+    expect(isValidScheduleData(dup)).toBe(false);
   });
 });
 
@@ -97,5 +113,27 @@ describe('isValidEventData', () => {
 
   it('rejects an empty stats array', () => {
     expect(isValidEventData({ ...eventJson, stats: [] })).toBe(false);
+  });
+});
+
+describe('isValidSponsorsData', () => {
+  it('accepts the real seeded sponsors.json', () => {
+    expect(isValidSponsorsData(sponsorsJson)).toBe(true);
+  });
+
+  it('accepts empty lists', () => {
+    expect(isValidSponsorsData({ coAssociates: [], poweredBy: [] })).toBe(true);
+  });
+
+  it('rejects a non-object or missing list', () => {
+    expect(isValidSponsorsData(null)).toBe(false);
+    expect(isValidSponsorsData({ coAssociates: [] })).toBe(false);
+  });
+
+  it('rejects a sponsor without a name or with a non-URL logo', () => {
+    const base = sponsorsJson.coAssociates[0];
+    expect(isValidSponsorsData({ ...sponsorsJson, coAssociates: [{ ...base, name: '' }] })).toBe(false);
+    expect(isValidSponsorsData({ ...sponsorsJson, coAssociates: [{ ...base, logo: 'rungta.png' }] })).toBe(false);
+    expect(isValidSponsorsData({ ...sponsorsJson, coAssociates: [{ name: 'X' }] })).toBe(false);
   });
 });

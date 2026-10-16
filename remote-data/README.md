@@ -61,6 +61,24 @@ field recovery. A few examples of edits that will be silently rejected
 - Leaving `day1`, `day2`, `transport`, `hotels`, or `raipurPlaces` as an
   empty array (these must have at least one entry); `cuisine` may be empty.
 - Making `event.startDate` not a parseable ISO date string.
+- Removing a schedule session's `id`, giving it one not shaped like `d1-03`
+  (`d` + day number + `-` + two digits), or reusing an `id`.
+
+### Schedule session ids and times
+
+Every schedule session has a stable `id` (`d1-01`, `d2-05`, ...). Delegates'
+questions and feedback are stored against that id, so:
+
+- **Never renumber or reuse an id.** Give a new session a new id (e.g. the
+  next free number for that day), even if it sits mid-list.
+- **Changing a session's `time` here is not enough.** The server decides
+  when questions/feedback open (session start; questions until 30 min after
+  the end) from its own copy of the times in
+  `apticon-2026/lib/mobile/session-catalog.ts`. Update that file and
+  redeploy the backend whenever a session's time changes, or the in-app
+  Questions/Feedback tabs will open at the old time.
+- New sessions must also be added to that catalog, otherwise the app shows
+  them but questions/feedback for them are rejected as "Session not found".
 
 Fields that ARE optional and safe to omit per committee member: `role`,
 `designation`, `institution`, `email`, `image`.
@@ -72,3 +90,13 @@ JSON files. Most already point at `aptiindia.org`; the rest point at files
 already committed to this repo under `assets/committee/` and `assets/venue/`
 via their raw GitHub URL — if you replace one of those asset files (same
 filename) and push, its JSON reference keeps working with the new photo.
+
+## Sponsors
+
+`sponsors.json` has two lists, `coAssociates` and `poweredBy`, each item
+`{ "name": "...", "logo": "<https URL>" }`. The Home screen shows them as a
+logo grid (and hides a list that is empty). To add or replace a logo, commit
+the PNG to `assets/sponsors/` and point `logo` at its raw GitHub URL, as the
+existing entries do. A `logo` that is not an `http(s)` URL, or a missing
+`name`, makes the whole file get ignored. If a logo fails to load the app
+shows the sponsor's name instead.

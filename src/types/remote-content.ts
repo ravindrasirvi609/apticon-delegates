@@ -79,3 +79,13 @@ export interface EventData {
   event: RemoteEventInfo;
   stats: readonly EventStat[];
 }
+
+// ---------- Sponsors ----------
+export interface RemoteSponsor {
+  name: string;
+  logo: RemoteImage;
+}
+export interface SponsorsData {
+  coAssociates: RemoteSponsor[];
+  poweredBy: RemoteSponsor[];
+}

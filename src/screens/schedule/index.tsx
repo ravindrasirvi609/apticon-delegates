@@ -32,7 +32,7 @@ export function ScheduleScreen() {
       <DayToggle options={DAYS} active={activeDay} onChange={setActiveDay} />
       <FlatList
         data={day.sessions}
-        keyExtractor={(item, index) => `${activeDay}-${index}`}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => <SessionCard session={item} />}
         ListHeaderComponent={<View style={styles.listSpacer} />}
         ListFooterComponent={<Legend />}

@@ -1,6 +1,6 @@
 import { SESSION_COLORS } from '@/data/schedule';
 import { KNOWN_ICON_KEYS } from '@/utils/icon-map';
-import type { ScheduleData, CommitteeData, VenueData, EventData } from '@/types/remote-content';
+import type { ScheduleData, CommitteeData, VenueData, EventData, SponsorsData } from '@/types/remote-content';
 
 /**
  * Lightweight, dependency-free shape checks for hand-edited remote JSON.
@@ -18,9 +18,13 @@ const isNum = (v: unknown): v is number => typeof v === 'number' && !Number.isNa
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 
 // ---------- Schedule ----------
+const SESSION_ID_PATTERN = /^d[1-9]-\d{2}$/;
+
 function isValidSession(item: unknown): boolean {
   if (!isObj(item)) return false;
   return (
+    isStr(item.id) &&
+    SESSION_ID_PATTERN.test(item.id) &&
     isNonEmptyStr(item.time) &&
     isNonEmptyStr(item.title) &&
     isNonEmptyStr(item.hall) &&
@@ -32,10 +36,17 @@ function isValidSession(item: unknown): boolean {
 
 export function isValidScheduleData(data: unknown): data is ScheduleData {
   if (!isObj(data)) return false;
-  return (
-    Array.isArray(data.day1) && data.day1.length > 0 && data.day1.every(isValidSession) &&
-    Array.isArray(data.day2) && data.day2.length > 0 && data.day2.every(isValidSession)
-  );
+  if (
+    !(
+      Array.isArray(data.day1) && data.day1.length > 0 && data.day1.every(isValidSession) &&
+      Array.isArray(data.day2) && data.day2.length > 0 && data.day2.every(isValidSession)
+    )
+  ) {
+    return false;
+  }
+  // Ids key server-side questions/feedback, so a duplicate would mix two sessions together.
+  const ids = [...data.day1, ...data.day2].map((s) => (s as { id: string }).id);
+  return new Set(ids).size === ids.length;
 }
 
 // ---------- Committee ----------
@@ -137,5 +148,21 @@ export function isValidEventData(data: unknown): data is EventData {
   return (
     isValidEventInfo(data.event) &&
     Array.isArray(data.stats) && data.stats.length > 0 && data.stats.every(isValidStat)
+  );
+}
+
+// ---------- Sponsors ----------
+function isValidSponsor(item: unknown): boolean {
+  if (!isObj(item)) return false;
+  // Remote JSON can only supply a URL (bundled logos are require()d in src/data/sponsors.ts).
+  return isNonEmptyStr(item.name) && isStr(item.logo) && /^https?:\/\/\S+$/.test(item.logo);
+}
+
+/** Either list may be empty (e.g. no "Powered by" partner yet); the screen hides empty sections. */
+export function isValidSponsorsData(data: unknown): data is SponsorsData {
+  if (!isObj(data)) return false;
+  return (
+    Array.isArray(data.coAssociates) && data.coAssociates.every(isValidSponsor) &&
+    Array.isArray(data.poweredBy) && data.poweredBy.every(isValidSponsor)
   );
 }

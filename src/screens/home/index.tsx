@@ -13,6 +13,7 @@ import { Divider } from '@/components/ui/divider';
 import { colors, elevation, fontFamily, fontSize, radius, spacing, textStyles } from '@/theme';
 import { CountdownRow } from './countdown-row';
 import { QuickNavCard } from './quick-nav-card';
+import { SponsorsSection } from './sponsors-section';
 
 const EVENT_FALLBACK: EventData = { event: EVENT, stats: STATS };
 
@@ -60,6 +61,8 @@ export function HomeScreen() {
         <Text style={styles.hostTitle}>Hosted by</Text>
         <Text style={styles.hostBody}>{event.host}, in partnership with {event.partner}.</Text>
       </Card>
+
+      <SponsorsSection />
     </Screen>
   );
 }
