@@ -78,8 +78,10 @@ const styles = StyleSheet.create({
   title: { ...textStyles.h1, textAlign: 'center' },
   subtitle: { ...textStyles.bodyMuted, textAlign: 'center' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: spacing.sm },
-  poweredBy: { alignItems: 'center', gap: spacing.md, marginTop: spacing.sm },
-  poweredByLabel: { ...textStyles.eyebrow, color: colors.text.muted },
+  // Must NOT use alignItems: 'center' here: that shrink-wraps the grid to its content, and the
+  // tiles' percentage widths (and the logos' width: '100%') then collapse to zero.
+  poweredBy: { gap: spacing.md, marginTop: spacing.sm },
+  poweredByLabel: { ...textStyles.eyebrow, color: colors.text.muted, textAlign: 'center' },
   tile: {
     height: 76,
     padding: spacing.sm,
