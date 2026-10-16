@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { CalendarDays, Home, MapPin, Mic, Users } from 'lucide-react-native';
+import { CalendarDays, Home, MapPin, Mic, UserRound, Users } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
 import { colors, fontFamily, radius } from '@/theme';
 
@@ -56,6 +56,13 @@ export default function TabsLayout() {
         options={{
           title: 'Venue',
           tabBarIcon: ({ color, focused }) => <TabIcon Icon={MapPin} color={String(color)} focused={focused} />,
+        }}
+      />
+      <Tabs.Screen
+        name="me"
+        options={{
+          title: 'Me',
+          tabBarIcon: ({ color, focused }) => <TabIcon Icon={UserRound} color={String(color)} focused={focused} />,
         }}
       />
     </Tabs>
