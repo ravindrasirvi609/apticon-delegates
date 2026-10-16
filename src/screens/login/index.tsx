@@ -81,9 +81,14 @@ export function LoginScreen() {
     try {
       const result = await loginDelegate(registrationCode, normalizedEmail);
       await signIn(result);
-      // The root layout's Stack.Protected guard closes this screen once the session exists.
+      // The root layout's Stack.Protected guard also closes this screen once the session exists;
+      // leave explicitly as well so we never depend on that redirect (e.g. when /login was the
+      // first screen, with nothing to go back to).
+      if (router.canGoBack()) router.back();
+      else router.replace('/');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
+    } finally {
       setSubmitting(false);
     }
   };

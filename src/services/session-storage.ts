@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import type { Delegate } from './delegate-auth';
 
@@ -9,13 +10,36 @@ export interface StoredSession {
   delegate: Delegate;
 }
 
-/** Never throws: a keychain failure just means the delegate is treated as logged out. */
+// expo-secure-store has no web implementation (its web module is an empty object, so every call
+// throws). On native the Keychain/Keystore is used; on web (dev/preview only) fall back to
+// localStorage.
+const isWeb = Platform.OS === 'web';
+
+async function getItem(key: string): Promise<string | null> {
+  if (isWeb) return globalThis.localStorage?.getItem(key) ?? null;
+  return SecureStore.getItemAsync(key);
+}
+
+async function setItem(key: string, value: string): Promise<void> {
+  if (isWeb) {
+    globalThis.localStorage?.setItem(key, value);
+    return;
+  }
+  await SecureStore.setItemAsync(key, value);
+}
+
+async function deleteItem(key: string): Promise<void> {
+  if (isWeb) {
+    globalThis.localStorage?.removeItem(key);
+    return;
+  }
+  await SecureStore.deleteItemAsync(key);
+}
+
+/** Never throws: a storage failure just means the delegate is treated as logged out. */
 export async function loadSession(): Promise<StoredSession | null> {
   try {
-    const [token, rawDelegate] = await Promise.all([
-      SecureStore.getItemAsync(TOKEN_KEY),
-      SecureStore.getItemAsync(DELEGATE_KEY),
-    ]);
+    const [token, rawDelegate] = await Promise.all([getItem(TOKEN_KEY), getItem(DELEGATE_KEY)]);
     if (!token || !rawDelegate) return null;
     const delegate = JSON.parse(rawDelegate) as Delegate;
     if (typeof delegate?.id !== 'string' || typeof delegate?.name !== 'string') return null;
@@ -25,19 +49,17 @@ export async function loadSession(): Promise<StoredSession | null> {
   }
 }
 
+/** Throws if storage is unavailable; callers decide whether that matters (login must not fail on it). */
 export async function saveSession(session: StoredSession): Promise<void> {
   await Promise.all([
-    SecureStore.setItemAsync(TOKEN_KEY, session.token),
-    SecureStore.setItemAsync(DELEGATE_KEY, JSON.stringify(session.delegate)),
+    setItem(TOKEN_KEY, session.token),
+    setItem(DELEGATE_KEY, JSON.stringify(session.delegate)),
   ]);
 }
 
 export async function clearSession(): Promise<void> {
   try {
-    await Promise.all([
-      SecureStore.deleteItemAsync(TOKEN_KEY),
-      SecureStore.deleteItemAsync(DELEGATE_KEY),
-    ]);
+    await Promise.all([deleteItem(TOKEN_KEY), deleteItem(DELEGATE_KEY)]);
   } catch {
     // Nothing useful to do; the in-memory session is already cleared.
   }
