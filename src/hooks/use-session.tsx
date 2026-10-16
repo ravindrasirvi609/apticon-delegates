@@ -9,6 +9,12 @@ interface SessionContextValue {
   isLoading: boolean;
   signIn: (result: DelegateLoginResult) => Promise<void>;
   signOut: () => Promise<void>;
+  /**
+   * Call with any error from an authenticated request. Returns true (and logs the delegate out)
+   * if the server rejected the token or the registration (401/403) — the caller should then just
+   * stop; any other error is left for the caller to show.
+   */
+  handleApiError: (err: unknown) => boolean;
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null);
@@ -59,9 +65,20 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     };
   }, [signOut]);
 
+  const handleApiError = useCallback(
+    (err: unknown) => {
+      if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
+        void signOut();
+        return true;
+      }
+      return false;
+    },
+    [signOut]
+  );
+
   const value = useMemo(
-    () => ({ session, isLoading, signIn, signOut }),
-    [session, isLoading, signIn, signOut]
+    () => ({ session, isLoading, signIn, signOut, handleApiError }),
+    [session, isLoading, signIn, signOut, handleApiError]
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

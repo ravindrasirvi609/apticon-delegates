@@ -38,6 +38,19 @@ describe('isValidScheduleData', () => {
     const bad = { ...scheduleJson, day1: [rest] };
     expect(isValidScheduleData(bad)).toBe(false);
   });
+
+  it('rejects a session without an id or with a malformed id', () => {
+    const { id, ...noId } = scheduleJson.day1[0];
+    expect(isValidScheduleData({ ...scheduleJson, day1: [noId] })).toBe(false);
+    expect(
+      isValidScheduleData({ ...scheduleJson, day1: [{ ...scheduleJson.day1[0], id: 'session one' }] })
+    ).toBe(false);
+  });
+
+  it('rejects duplicate session ids', () => {
+    const dup = { ...scheduleJson, day1: [scheduleJson.day1[0], scheduleJson.day1[0]] };
+    expect(isValidScheduleData(dup)).toBe(false);
+  });
 });
 
 describe('isValidCommitteeData', () => {

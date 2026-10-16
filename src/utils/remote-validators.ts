@@ -18,9 +18,13 @@ const isNum = (v: unknown): v is number => typeof v === 'number' && !Number.isNa
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null;
 
 // ---------- Schedule ----------
+const SESSION_ID_PATTERN = /^d[1-9]-\d{2}$/;
+
 function isValidSession(item: unknown): boolean {
   if (!isObj(item)) return false;
   return (
+    isStr(item.id) &&
+    SESSION_ID_PATTERN.test(item.id) &&
     isNonEmptyStr(item.time) &&
     isNonEmptyStr(item.title) &&
     isNonEmptyStr(item.hall) &&
@@ -32,10 +36,17 @@ function isValidSession(item: unknown): boolean {
 
 export function isValidScheduleData(data: unknown): data is ScheduleData {
   if (!isObj(data)) return false;
-  return (
-    Array.isArray(data.day1) && data.day1.length > 0 && data.day1.every(isValidSession) &&
-    Array.isArray(data.day2) && data.day2.length > 0 && data.day2.every(isValidSession)
-  );
+  if (
+    !(
+      Array.isArray(data.day1) && data.day1.length > 0 && data.day1.every(isValidSession) &&
+      Array.isArray(data.day2) && data.day2.length > 0 && data.day2.every(isValidSession)
+    )
+  ) {
+    return false;
+  }
+  // Ids key server-side questions/feedback, so a duplicate would mix two sessions together.
+  const ids = [...data.day1, ...data.day2].map((s) => (s as { id: string }).id);
+  return new Set(ids).size === ids.length;
 }
 
 // ---------- Committee ----------

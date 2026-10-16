@@ -1,12 +1,19 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { ChevronRight } from 'lucide-react-native';
 import type { ScheduleSession } from '@/data/schedule';
 import { SESSION_COLORS } from '@/data/schedule';
 import { TypeChip } from '@/components/ui/type-chip';
+import { ScalePressable } from '@/components/ui/pressable-scale';
+import { isInteractiveSession } from '@/utils/session';
 import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
 
 export function SessionCard({ session }: { session: ScheduleSession }) {
+  const router = useRouter();
   const palette = SESSION_COLORS[session.type];
-  return (
+  const interactive = isInteractiveSession(session);
+
+  const content = (
     <View style={styles.row}>
       <View style={[styles.accentBar, { backgroundColor: palette.bg }]} />
       <View style={styles.card}>
@@ -17,8 +24,26 @@ export function SessionCard({ session }: { session: ScheduleSession }) {
           {session.description ? <Text style={styles.description}>{session.description}</Text> : null}
           <Text style={styles.hall}>{session.hall}</Text>
         </View>
+        {interactive ? (
+          <View style={styles.chevron}>
+            <ChevronRight color={colors.text.faint} size={18} />
+          </View>
+        ) : null}
       </View>
     </View>
+  );
+
+  // Breaks and logistics have nothing to ask or rate, so they stay plain cards.
+  if (!interactive) return content;
+
+  return (
+    <ScalePressable
+      accessibilityRole="button"
+      accessibilityLabel={`${session.title}, ${session.time}. Open session`}
+      onPress={() => router.push({ pathname: '/session/[id]', params: { id: session.id } })}
+    >
+      {content}
+    </ScalePressable>
   );
 }
 
@@ -41,6 +66,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.md,
   },
+  chevron: { alignSelf: 'center' },
   time: { width: 88, fontFamily: fontFamily.sansSemiBold, fontSize: fontSize.xs, color: colors.text.muted },
   body: { flex: 1, gap: spacing.xs },
   title: { fontFamily: fontFamily.sansSemiBold, fontSize: fontSize.base, color: colors.text.dark },
