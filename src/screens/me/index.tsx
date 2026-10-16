@@ -1,10 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { LogIn, LogOut, UserRound } from 'lucide-react-native';
+import { LogOut } from 'lucide-react-native';
 import { Screen } from '@/components/ui/screen';
 import { ScreenHeader } from '@/components/ui/screen-header';
-import { EmptyState } from '@/components/ui/empty-state';
 import { Card } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -13,27 +11,11 @@ import { useSession } from '@/hooks/use-session';
 import { colors, spacing, textStyles } from '@/theme';
 
 export function MeScreen() {
-  const router = useRouter();
   const { session, signOut } = useSession();
 
-  if (!session) {
-    return (
-      <Screen style={styles.guest}>
-        <StatusBar style="dark" />
-        <View style={styles.guestContent}>
-          <EmptyState
-            icon={UserRound}
-            eyebrow="Delegate"
-            title="Log in to take part"
-            body="Sign in with your registration QR and email to ask questions and share feedback on sessions."
-          />
-          <Button icon={LogIn} onPress={() => router.push('/login')}>
-            Log in
-          </Button>
-        </View>
-      </Screen>
-    );
-  }
+  // Only reachable while logged in (the root layout guards it); this is just for the brief moment
+  // while a logout is swapping the navigator back to the login screen.
+  if (!session) return null;
 
   const { delegate } = session;
   return (
@@ -56,8 +38,6 @@ export function MeScreen() {
 }
 
 const styles = StyleSheet.create({
-  guest: { alignItems: 'center', justifyContent: 'center' },
-  guestContent: { paddingHorizontal: spacing['2xl'], gap: spacing.xl, alignItems: 'center' },
   body: { padding: spacing.lg, gap: spacing.lg },
   profile: { alignItems: 'center', gap: spacing.sm },
   name: { ...textStyles.h2, textAlign: 'center' },

@@ -8,7 +8,6 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Camera, ImageUp, LogIn, QrCode } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -27,7 +26,6 @@ import { QrScanner } from './qr-scanner';
 const NOT_A_REGISTRATION_QR = "That QR code isn't an APTICON registration QR. Try again or type your code.";
 
 export function LoginScreen() {
-  const router = useRouter();
   const { signIn } = useSession();
   const [code, setCode] = useState('');
   const [email, setEmail] = useState('');
@@ -80,12 +78,9 @@ export function LoginScreen() {
     setSubmitting(true);
     try {
       const result = await loginDelegate(registrationCode, normalizedEmail);
+      // Once the session exists the root layout's Stack.Protected guards swap this screen for
+      // the tabs; there is nothing to navigate to by hand.
       await signIn(result);
-      // The root layout's Stack.Protected guard also closes this screen once the session exists;
-      // leave explicitly as well so we never depend on that redirect (e.g. when /login was the
-      // first screen, with nothing to go back to).
-      if (router.canGoBack()) router.back();
-      else router.replace('/');
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
     } finally {
@@ -105,7 +100,7 @@ export function LoginScreen() {
           <ScreenHeader
             eyebrow="Delegate Login"
             title="Welcome, Delegate"
-            subtitle="Scan the QR code from your registration email and enter the email you registered with."
+            subtitle="Sign in to continue. Scan the QR code from your registration email and enter the email you registered with."
           />
 
           <View style={styles.body}>
@@ -171,10 +166,6 @@ export function LoginScreen() {
                 {submitting ? 'Signing in…' : 'Sign in'}
               </Button>
             </Card>
-
-            <Button variant="ghost" onPress={() => router.back()}>
-              Continue as guest
-            </Button>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

@@ -7,8 +7,14 @@ Status: Draft for review (supersedes "no backend, no login, no forms" in
 ## Goal
 
 Let a registered delegate log in to the delegate app, then — per conference
-session — ask questions (and upvote others') and leave feedback. Browsing
-(schedule, committee, speakers, venue) stays public and login-free.
+session — ask questions (and upvote others') and leave feedback.
+
+**Update (2026-10-17):** the user asked that nothing in the app — not just
+asking/feedback — be visible before login. Login is now the only screen a
+signed-out delegate can reach; every tab (Home, Schedule, Committee,
+Speakers, Venue, Me) requires a session. The "browsing stays public" line
+below and the guest-prompt mechanism it describes no longer apply; left in
+place as history of the earlier decision.
 
 ## Confirmed decisions
 
@@ -132,7 +138,7 @@ docs: `CameraView` `onBarcodeScanned` + `barcodeScannerSettings`,
 src/
   app/
     _layout.tsx              wrap in SessionProvider; keep splash until loaded
-    (tabs)/me.tsx            profile, logout (shows "Log in" if guest)
+    (tabs)/me.tsx            profile, logout
     login.tsx                scan / upload / type code + email   (modal route)
     session/[id].tsx         tabs: Details | Q&A | Feedback
   services/
@@ -144,15 +150,17 @@ src/
                              feedback-form, star-rating
 ```
 
-- Guard only the *actions*: Q&A/Feedback tabs show a "Log in to ask / give
-  feedback" `EmptyState` + `Button` for guests; no global login wall.
+- (superseded 2026-10-17 — see note above) Guard only the *actions*:
+  Q&A/Feedback tabs show a "Log in to ask / give feedback" `EmptyState` +
+  `Button` for guests; no global login wall.
 - `schedule.json` sessions get a stable `id` (e.g. `d1-03`); update
   `src/types/remote-content.ts`, `src/data/schedule.ts` defaults,
   `src/utils/remote-validators.ts` (+ tests) and `remote-data/README.md`.
   Session card becomes tappable → `session/[id]`.
 - Reuse existing `Card`, `Button`, `Badge`, `EmptyState`, `PressableScale`,
   theme tokens. Follow existing test style (jest-expo) for services/validators.
-- A 401 from any delegate call clears the token and returns to guest state.
+- A 401 from any delegate call clears the token, which returns the delegate
+  to the login screen (there is no guest state to fall back to any more).
 - Network failures: inline error + retry; submitted text is kept in the input.
 
 ## Out of scope (v1)

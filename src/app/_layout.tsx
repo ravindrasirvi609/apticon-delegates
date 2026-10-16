@@ -51,10 +51,14 @@ function RootNavigator() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
-      {/* Browsing is open to guests; the login screen is only reachable while logged out. */}
+      {/* Delegates only: nothing but the login screen exists until there is a session. Logging in
+          (or out, or a rejected token) swaps the two groups and Expo Router redirects. */}
+      <Stack.Protected guard={!!session}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="session/[id]" />
+      </Stack.Protected>
       <Stack.Protected guard={!session}>
-        <Stack.Screen name="login" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="login" />
       </Stack.Protected>
     </Stack>
   );

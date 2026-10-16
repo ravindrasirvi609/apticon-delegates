@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
-import { MessageCircleQuestion, Send } from 'lucide-react-native';
+import { Send } from 'lucide-react-native';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useSession } from '@/hooks/use-session';
@@ -13,7 +13,6 @@ import {
   type SessionWindow,
 } from '@/services/delegate-qa';
 import { colors, fontFamily, fontSize, radius, spacing, textStyles } from '@/theme';
-import { LoginPrompt } from './login-prompt';
 
 const MAX_QUESTION = 500;
 const MIN_QUESTION = 3;
@@ -29,15 +28,8 @@ const STATUS_LABEL: Record<QuestionStatus, string> = {
 
 export function QuestionsPanel({ sessionId }: { sessionId: string }) {
   const { session } = useSession();
-  if (!session) {
-    return (
-      <LoginPrompt
-        icon={MessageCircleQuestion}
-        title="Log in to ask a question"
-        body="Sign in with your registration QR and email to send a question for this session."
-      />
-    );
-  }
+  // Session screens are only reachable while logged in; null only while a logout is in flight.
+  if (!session) return null;
   return <QuestionsForm sessionId={sessionId} token={session.token} />;
 }
 
