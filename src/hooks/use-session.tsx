@@ -30,8 +30,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback(async ({ token, delegate }: DelegateLoginResult) => {
     const next = { token, delegate };
-    await saveSession(next);
+    // Log in first, persist second: the server already accepted the login, so a keychain/storage
+    // failure must not turn it into a failed login. Worst case the delegate has to sign in again
+    // after restarting the app.
     setSession(next);
+    try {
+      await saveSession(next);
+    } catch (err) {
+      console.warn('[session] could not persist login', err);
+    }
   }, []);
 
   useEffect(() => {
@@ -51,8 +58,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         const delegate: Delegate = await fetchDelegateMe(stored.token);
         if (cancelled) return;
         const refreshed = { token: stored.token, delegate };
-        await saveSession(refreshed);
         setSession(refreshed);
+        await saveSession(refreshed).catch(() => undefined);
       } catch (err) {
         if (!cancelled && err instanceof ApiError && (err.status === 401 || err.status === 403)) {
           await signOut();
