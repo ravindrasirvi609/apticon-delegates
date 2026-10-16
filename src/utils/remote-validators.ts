@@ -1,6 +1,6 @@
 import { SESSION_COLORS } from '@/data/schedule';
 import { KNOWN_ICON_KEYS } from '@/utils/icon-map';
-import type { ScheduleData, CommitteeData, VenueData, EventData } from '@/types/remote-content';
+import type { ScheduleData, CommitteeData, VenueData, EventData, SponsorsData } from '@/types/remote-content';
 
 /**
  * Lightweight, dependency-free shape checks for hand-edited remote JSON.
@@ -148,5 +148,21 @@ export function isValidEventData(data: unknown): data is EventData {
   return (
     isValidEventInfo(data.event) &&
     Array.isArray(data.stats) && data.stats.length > 0 && data.stats.every(isValidStat)
+  );
+}
+
+// ---------- Sponsors ----------
+function isValidSponsor(item: unknown): boolean {
+  if (!isObj(item)) return false;
+  // Remote JSON can only supply a URL (bundled logos are require()d in src/data/sponsors.ts).
+  return isNonEmptyStr(item.name) && isStr(item.logo) && /^https?:\/\/\S+$/.test(item.logo);
+}
+
+/** Either list may be empty (e.g. no "Powered by" partner yet); the screen hides empty sections. */
+export function isValidSponsorsData(data: unknown): data is SponsorsData {
+  if (!isObj(data)) return false;
+  return (
+    Array.isArray(data.coAssociates) && data.coAssociates.every(isValidSponsor) &&
+    Array.isArray(data.poweredBy) && data.poweredBy.every(isValidSponsor)
   );
 }

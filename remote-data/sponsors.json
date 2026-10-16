@@ -1,0 +1,17 @@
+{
+  "coAssociates": [
+    { "name": "Rungta International Skills University", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/rungta.png" },
+    { "name": "Columbia Professional University", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/columbia.png" },
+    { "name": "NIMS University, Jaipur", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/nims.png" },
+    { "name": "SAGE University", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/sage.png" },
+    { "name": "Gracious College of Pharmacy", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/gracious.png" },
+    { "name": "Shri Shankaracharya Professional University", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/shankaracharya.png" },
+    { "name": "D Y Patil University, Navi Mumbai", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/dy-patil.png" },
+    { "name": "Shri Davara University", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/davara.png" },
+    { "name": "Sri Aurobindo Institute of Pharmacy", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/sri-aurobindo.png" }
+  ],
+  "poweredBy": [
+    { "name": "Operant Pharmacy Federation", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/opf.png" },
+    { "name": "GPAT Discussion Center", "logo": "https://raw.githubusercontent.com/ravindrasirvi609/apticon-delegates/main/assets/sponsors/gpat.png" }
+  ]
+}

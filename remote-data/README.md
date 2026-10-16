@@ -90,3 +90,13 @@ JSON files. Most already point at `aptiindia.org`; the rest point at files
 already committed to this repo under `assets/committee/` and `assets/venue/`
 via their raw GitHub URL — if you replace one of those asset files (same
 filename) and push, its JSON reference keeps working with the new photo.
+
+## Sponsors
+
+`sponsors.json` has two lists, `coAssociates` and `poweredBy`, each item
+`{ "name": "...", "logo": "<https URL>" }`. The Home screen shows them as a
+logo grid (and hides a list that is empty). To add or replace a logo, commit
+the PNG to `assets/sponsors/` and point `logo` at its raw GitHub URL, as the
+existing entries do. A `logo` that is not an `http(s)` URL, or a missing
+`name`, makes the whole file get ignored. If a logo fails to load the app
+shows the sponsor's name instead.
