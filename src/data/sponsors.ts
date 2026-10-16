@@ -16,6 +16,10 @@ export const CO_ASSOCIATES: Sponsor[] = [
   { name: 'D Y Patil University, Navi Mumbai', logo: require('../../assets/sponsors/dy-patil.png') },
   { name: 'Shri Davara University', logo: require('../../assets/sponsors/davara.png') },
   { name: 'Sri Aurobindo Institute of Pharmacy', logo: require('../../assets/sponsors/sri-aurobindo.png') },
+  {
+    name: 'Bureau for Experiential Pharmacy Education Status Upliftment',
+    logo: require('../../assets/sponsors/bureau-experiential.jpeg'),
+  },
 ];
 
 export const POWERED_BY: Sponsor[] = [
