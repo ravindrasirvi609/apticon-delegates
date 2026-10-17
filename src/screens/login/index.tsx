@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -97,6 +98,15 @@ export function LoginScreen() {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
+          <View style={styles.logoWrap}>
+            <Image
+              source={require('../../../assets/brand/apticon-logo.png')}
+              style={styles.logo}
+              resizeMode="cover"
+              accessibilityLabel="APTICON 2026 logo"
+            />
+          </View>
+
           <ScreenHeader
             eyebrow="Delegate Login"
             title="Welcome, Delegate"
@@ -166,6 +176,17 @@ export function LoginScreen() {
                 {submitting ? 'Signing in…' : 'Sign in'}
               </Button>
             </Card>
+
+            <View style={styles.poweredBy}>
+              <Text style={styles.poweredByLabel}>Powered by</Text>
+              <Image
+                source={require('../../../assets/sponsors/opf.png')}
+                style={styles.opfLogo}
+                resizeMode="contain"
+                accessibilityLabel="Operant Pharmacy Federation logo"
+              />
+              <Text style={styles.poweredByName}>Operant Pharmacy Federation</Text>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -176,7 +197,27 @@ export function LoginScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: { paddingBottom: spacing['3xl'] },
+  // The logo artwork is 3:2 with its own dark backdrop, so frame it as a rounded banner.
+  logoWrap: {
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.lg,
+    width: 240,
+    aspectRatio: 3 / 2,
+    alignSelf: 'center',
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+  },
+  logo: { width: '100%', height: '100%' },
   body: { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, gap: spacing.lg },
+  poweredBy: { alignItems: 'center', gap: spacing.sm, marginTop: spacing.md },
+  poweredByLabel: { ...textStyles.eyebrow, color: colors.text.muted, textAlign: 'center' },
+  opfLogo: { width: 96, height: 96, borderRadius: radius.md },
+  poweredByName: {
+    fontFamily: fontFamily.sansMedium,
+    fontSize: fontSize.sm,
+    color: colors.text.muted,
+    textAlign: 'center',
+  },
   actions: { gap: spacing.sm },
   form: { gap: spacing.sm },
   label: { ...textStyles.label, marginTop: spacing.xs },
