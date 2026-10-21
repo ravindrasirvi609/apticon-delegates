@@ -18,7 +18,7 @@ describe('isInteractiveSession', () => {
 
 describe('findSession', () => {
   it('finds a session and its day by id', () => {
-    expect(findSession(schedule, 'd1-02')?.session.title).toBe('Inaugural Ceremony');
+    expect(findSession(schedule, 'd1-02')?.session.title).toBe('Inaugural Function');
     expect(findSession(schedule, 'd1-02')?.day).toBe(1);
     expect(findSession(schedule, 'd2-08')?.day).toBe(2);
   });

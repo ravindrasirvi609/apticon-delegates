@@ -32,24 +32,24 @@ export const SESSION_COLORS: Record<SessionType, { bg: string; text: string }> =
 };
 
 export const SCHEDULE_DAY1: ScheduleSession[] = [
-  { id: 'd1-01', time: '09:00 – 10:00', title: 'Registration & Welcome Kit Distribution', type: 'logistics', hall: 'Main Lobby' },
-  { id: 'd1-02', time: '10:00 – 11:30', title: 'Inaugural Ceremony', type: 'inaugural', hall: 'Main Auditorium', description: 'Lamp lighting, welcome address, release of souvenir' },
-  { id: 'd1-03', time: '11:30 – 12:30', title: 'Presidential Address', type: 'keynote', hall: 'Main Auditorium' },
-  { id: 'd1-04', time: '12:30 – 13:30', title: 'Lunch & Networking', type: 'break', hall: 'Dining Hall' },
-  { id: 'd1-05', time: '13:30 – 15:00', title: "Keynote: Viksit Bharat 2047 — Pharmacy's Role", type: 'keynote', hall: 'Main Auditorium' },
-  { id: 'd1-06', time: '15:00 – 16:30', title: 'Scientific Session I: Pharmaceutical Education Innovation', type: 'scientific', hall: 'Hall A' },
-  { id: 'd1-07', time: '16:30 – 17:00', title: 'Tea Break', type: 'break', hall: 'Foyer' },
-  { id: 'd1-08', time: '17:00 – 18:30', title: 'Scientific Session II: Drug Discovery & Development', type: 'scientific', hall: 'Hall A' },
-  { id: 'd1-09', time: '19:00 – 21:00', title: 'Cultural Evening — Chhattisgarhi Folk Performances', type: 'cultural', hall: 'Open Stage' },
+  { id: 'd1-01', time: '08:30 – 10:00', title: 'Registration', type: 'logistics', hall: 'Auditorium Lobby' },
+  { id: 'd1-10', time: '08:30 – 10:00', title: 'Breakfast', type: 'break', hall: 'Cafeteria' },
+  { id: 'd1-02', time: '10:30 – 12:00', title: 'Inaugural Function', type: 'inaugural', hall: 'Main Auditorium' },
+  { id: 'd1-11', time: '12:00 – 13:20', title: 'Technical Session 1', type: 'scientific', hall: 'Main Auditorium', description: 'KLE Oration Lecture; Dr. G. Bhagwant Memorial Lecture; Panel Discussion I — Pharma Teacher’s Sankalp: From Teaching to Transforming Competencies.' },
+  { id: 'd1-04', time: '14:00 – 14:30', title: 'Lunch', type: 'break', hall: 'Cafeteria' },
+  { id: 'd1-12', time: '14:30 – 17:00', title: 'Technical Session 2', type: 'scientific', hall: 'Main Auditorium', description: 'M. L. Schroff Memorial Lecture; Dr. G. P. Srivastava Memorial Lecture; Shri A. Mishra Memorial Lecture in Pharmaceutical Technology; Workshop on AI Softwares.' },
+  { id: 'd1-13', time: '14:30 – 17:30', title: 'Oral/Poster Presentations', type: 'scientific', hall: 'Main Lobby' },
+  { id: 'd1-09', time: '17:15 – 20:00', title: 'Award Function and Cultural Night', type: 'cultural', hall: 'Main Auditorium' },
+  { id: 'd1-14', time: '20:00 – 22:00', title: 'Dinner', type: 'break', hall: 'Cafeteria' },
 ];
 
 export const SCHEDULE_DAY2: ScheduleSession[] = [
-  { id: 'd2-01', time: '09:00 – 10:30', title: 'Keynote: Atmanirbhar Bharat — Indigenous Pharma', type: 'keynote', hall: 'Main Auditorium' },
-  { id: 'd2-02', time: '10:30 – 12:00', title: 'Scientific Session III: Clinical Pharmacy & Pharmacovigilance', type: 'scientific', hall: 'Hall A' },
-  { id: 'd2-03', time: '12:00 – 13:00', title: 'Workshop: Outcome-Based Pharmacy Education', type: 'workshop', hall: 'Hall B' },
-  { id: 'd2-04', time: '13:00 – 14:00', title: 'Lunch', type: 'break', hall: 'Dining Hall' },
-  { id: 'd2-05', time: '14:00 – 15:30', title: 'Scientific Session IV: Herbal Medicine & Traditional Knowledge', type: 'scientific', hall: 'Hall A' },
-  { id: 'd2-06', time: '15:30 – 16:00', title: 'Tea Break', type: 'break', hall: 'Foyer' },
-  { id: 'd2-07', time: '16:00 – 17:00', title: 'Panel Discussion: Future of Pharmacy Education in India', type: 'panel', hall: 'Main Auditorium' },
-  { id: 'd2-08', time: '17:00 – 18:00', title: 'Valedictory Ceremony & Awards', type: 'valedictory', hall: 'Main Auditorium' },
+  { id: 'd2-09', time: '08:00 – 09:30', title: 'Breakfast', type: 'break', hall: 'Cafeteria' },
+  { id: 'd2-10', time: '09:30 – 10:10', title: 'J. S. S. Oration Lecture', type: 'keynote', hall: 'Main Auditorium', description: 'Prof. M. D. Burande, JSPM University, Pune. Chair: Dr. Surendra H. Bodake. Co-chair: Dr. Mohammed Haneefa.' },
+  { id: 'd2-11', time: '10:00 – 12:00', title: 'Oral/Poster Presentations', type: 'scientific', hall: 'Main Lobby' },
+  { id: 'd2-12', time: '10:10 – 11:10', title: 'Women Forum Event — Panel Discussion II', type: 'panel', hall: 'Main Auditorium', description: 'Women in Pharma: From Empowerment to Leadership for Viksit Bharat @2047. Moderator: Prof. Vandana Soni.' },
+  { id: 'd2-13', time: '11:10 – 11:50', title: '54th IPC Trust Sponsored Lecture', type: 'keynote', hall: 'Main Auditorium', description: 'Prof. Sanjay Jain, Dr. H. S. Gour University, Sagar. Chair: Prof. N. V. V. Jagan Mohan Reddy. Co-chair: Dr. K. Venkat Ramanna.' },
+  { id: 'd2-14', time: '11:50 – 12:50', title: 'Panel Discussion III', type: 'panel', hall: 'Main Auditorium', description: 'From Classroom to Pharmaceutical Innovation: Connecting Academia and Industry. Moderator: Prof. Rohit Dutt.' },
+  { id: 'd2-04', time: '13:00 – 14:00', title: 'Lunch', type: 'break', hall: 'Cafeteria' },
+  { id: 'd2-08', time: '14:00 – 16:00', title: 'Valedictory Function', type: 'valedictory', hall: 'Main Auditorium', description: 'Release of APTI journals and newsletters; Awards & Felicitation Ceremony; APTI Annual General Body Meeting.' },
 ];
