@@ -4,7 +4,17 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { colors, fontFamily, fontSize, radius, spacing } from '@/theme';
 import { ScalePressable } from '@/components/ui/pressable-scale';
 
-export function SearchBar({ value, onChange }: { value: string; onChange: (text: string) => void }) {
+export function SearchBar({
+  value,
+  onChange,
+  placeholder = 'Search committee by name, state, or institution...',
+  accessibilityLabel = 'Search committee members',
+}: {
+  value: string;
+  onChange: (text: string) => void;
+  placeholder?: string;
+  accessibilityLabel?: string;
+}) {
   const [focused, setFocused] = useState(false);
 
   return (
@@ -15,10 +25,10 @@ export function SearchBar({ value, onChange }: { value: string; onChange: (text:
         onChangeText={onChange}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        placeholder="Search committee by name, state, or institution..."
+        placeholder={placeholder}
         placeholderTextColor={colors.text.muted}
         style={styles.input}
-        accessibilityLabel="Search committee members"
+        accessibilityLabel={accessibilityLabel}
         accessibilityRole="search"
       />
       {value.length > 0 ? (

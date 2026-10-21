@@ -1,6 +1,14 @@
 import { SESSION_COLORS } from '@/data/schedule';
+import { SPEAKER_ROLE_LABELS } from '@/data/speakers';
 import { KNOWN_ICON_KEYS } from '@/utils/icon-map';
-import type { ScheduleData, CommitteeData, VenueData, EventData, SponsorsData } from '@/types/remote-content';
+import type {
+  ScheduleData,
+  SpeakersData,
+  CommitteeData,
+  VenueData,
+  EventData,
+  SponsorsData,
+} from '@/types/remote-content';
 
 /**
  * Lightweight, dependency-free shape checks for hand-edited remote JSON.
@@ -47,6 +55,35 @@ export function isValidScheduleData(data: unknown): data is ScheduleData {
   // Ids key server-side questions/feedback, so a duplicate would mix two sessions together.
   const ids = [...data.day1, ...data.day2].map((s) => (s as { id: string }).id);
   return new Set(ids).size === ids.length;
+}
+
+// ---------- Speakers ----------
+const SPEAKER_ROLES = new Set(Object.keys(SPEAKER_ROLE_LABELS));
+
+function isValidAppearance(item: unknown): boolean {
+  if (!isObj(item)) return false;
+  return (
+    isNonEmptyStr(item.role) &&
+    SPEAKER_ROLES.has(item.role) &&
+    isNonEmptyStr(item.session) &&
+    (item.sessionId === undefined || (isStr(item.sessionId) && SESSION_ID_PATTERN.test(item.sessionId)))
+  );
+}
+
+function isValidSpeaker(item: unknown): boolean {
+  if (!isObj(item)) return false;
+  for (const key of ['designation', 'institution', 'image'] as const) {
+    if (item[key] !== undefined && !isStr(item[key])) return false;
+  }
+  return (
+    isNonEmptyStr(item.name) &&
+    Array.isArray(item.appearances) && item.appearances.length > 0 && item.appearances.every(isValidAppearance)
+  );
+}
+
+export function isValidSpeakersData(data: unknown): data is SpeakersData {
+  if (!isObj(data)) return false;
+  return Array.isArray(data.speakers) && data.speakers.length > 0 && data.speakers.every(isValidSpeaker);
 }
 
 // ---------- Committee ----------

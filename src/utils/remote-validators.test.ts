@@ -1,5 +1,6 @@
 import {
   isValidScheduleData,
+  isValidSpeakersData,
   isValidCommitteeData,
   isValidVenueData,
   isValidEventData,
@@ -10,6 +11,8 @@ import {
 const scheduleJson = require('../../remote-data/schedule.json');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const committeeJson = require('../../remote-data/committee.json');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const speakersJson = require('../../remote-data/speakers.json');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const venueJson = require('../../remote-data/venue.json');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -53,6 +56,47 @@ describe('isValidScheduleData', () => {
   it('rejects duplicate session ids', () => {
     const dup = { ...scheduleJson, day1: [scheduleJson.day1[0], scheduleJson.day1[0]] };
     expect(isValidScheduleData(dup)).toBe(false);
+  });
+});
+
+describe('isValidSpeakersData', () => {
+  it('accepts the real seeded speakers.json', () => {
+    expect(isValidSpeakersData(speakersJson)).toBe(true);
+  });
+
+  it('rejects a non-object or an empty list', () => {
+    expect(isValidSpeakersData(null)).toBe(false);
+    expect(isValidSpeakersData({ speakers: [] })).toBe(false);
+  });
+
+  it('accepts a speaker with only a name and one appearance', () => {
+    expect(
+      isValidSpeakersData({ speakers: [{ name: 'Dr. X', appearances: [{ role: 'chair', session: 'Some Lecture' }] }] })
+    ).toBe(true);
+  });
+
+  it('rejects a speaker without a name or without appearances', () => {
+    const base = speakersJson.speakers[0];
+    expect(isValidSpeakersData({ speakers: [{ ...base, name: '' }] })).toBe(false);
+    expect(isValidSpeakersData({ speakers: [{ ...base, appearances: [] }] })).toBe(false);
+  });
+
+  it('rejects an unknown role or a malformed session id', () => {
+    const base = speakersJson.speakers[0];
+    const app = base.appearances[0];
+    expect(isValidSpeakersData({ speakers: [{ ...base, appearances: [{ ...app, role: 'vip' }] }] })).toBe(false);
+    expect(isValidSpeakersData({ speakers: [{ ...base, appearances: [{ ...app, sessionId: 'lecture one' }] }] })).toBe(
+      false
+    );
+  });
+
+  it('only links appearances to session ids that exist in the seeded schedule', () => {
+    const ids = new Set([...scheduleJson.day1, ...scheduleJson.day2].map((s: { id: string }) => s.id));
+    for (const speaker of speakersJson.speakers) {
+      for (const a of speaker.appearances) {
+        if (a.sessionId) expect(ids.has(a.sessionId)).toBe(true);
+      }
+    }
   });
 });
 

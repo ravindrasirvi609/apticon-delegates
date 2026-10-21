@@ -1,6 +1,7 @@
 import type { ImageSourcePropType } from 'react-native';
 import type { LucideIcon } from 'lucide-react-native';
 import type { ScheduleSession } from '@/data/schedule';
+import type { Speaker } from '@/data/speakers';
 import type { CommitteeGroup, CommitteeMember, StateBranch } from '@/data/committee';
 import type { TransportOption, Hotel, CuisineItem, RaipurPlace } from '@/data/venue';
 
@@ -17,6 +18,11 @@ export type RemoteIcon = LucideIcon | string;
 export interface ScheduleData {
   day1: ScheduleSession[];
   day2: ScheduleSession[];
+}
+
+// ---------- Speakers ----------
+export interface SpeakersData {
+  speakers: Speaker[];
 }
 
 // ---------- Committee ----------

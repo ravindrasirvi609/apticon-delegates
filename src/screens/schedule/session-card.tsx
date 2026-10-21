@@ -21,7 +21,12 @@ export function SessionCard({ session }: { session: ScheduleSession }) {
         <View style={styles.body}>
           <TypeChip label={session.type} bg={palette.bg} textColor={palette.text} />
           <Text style={styles.title}>{session.title}</Text>
-          {session.description ? <Text style={styles.description}>{session.description}</Text> : null}
+          {session.description ? (
+            // Panels list every panelist; the list shows a preview and the session screen shows it all.
+            <Text style={styles.description} numberOfLines={4}>
+              {session.description}
+            </Text>
+          ) : null}
           <Text style={styles.hall}>{session.hall}</Text>
         </View>
         {interactive ? (

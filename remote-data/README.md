@@ -100,3 +100,21 @@ the PNG to `assets/sponsors/` and point `logo` at its raw GitHub URL, as the
 existing entries do. A `logo` that is not an `http(s)` URL, or a missing
 `name`, makes the whole file get ignored. If a logo fails to load the app
 shows the sponsor's name instead.
+
+## Speakers
+
+`speakers.json` is `{ "speakers": [ ... ] }`, one entry per person, in the order
+the Speakers tab shows them. Each entry has a `name`, optional `designation`,
+`institution` and `image` (an `http(s)` URL), and at least one `appearances`
+item `{ "role", "session", "sessionId" }`:
+
+- `role` is one of `lecture`, `workshop`, `moderator`, `panelist`, `chair`,
+  `cochair` (it drives the filter tabs: Lectures / Panels / Chairs).
+- `session` is the short name shown on the card.
+- `sessionId` is optional; when set it must be a real `schedule.json` id
+  (e.g. `d1-18`) and tapping the row opens that session.
+
+A person who speaks in several sessions is **one** entry with several
+`appearances`. The seeded list was transcribed from the scientific schedule
+PDF (revised 19-10-26) together with `schedule.json`; when a session or its
+speakers change, update both files.
