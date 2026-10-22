@@ -30,7 +30,15 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-splash-screen",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FBEBD4",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 300,
+          "resizeMode": "contain"
+        }
+      ],
       "expo-secure-store",
       [
         "expo-camera",
