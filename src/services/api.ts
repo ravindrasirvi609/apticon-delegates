@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://apticon-2026.vercel.app/api/mobile';
+export const API_BASE_URL = 'https://apticon.in/api/mobile';
 
 const DEFAULT_TIMEOUT_MS = 10000;
 
