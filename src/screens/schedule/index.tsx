@@ -12,10 +12,20 @@ import { TypeChip } from '@/components/ui/type-chip';
 import { fontFamily, spacing, textStyles } from '@/theme';
 import { DayToggle } from './day-toggle';
 import { SessionCard } from './session-card';
+import { PresentationsPanel } from './presentations-panel';
 
 const SCHEDULE_FALLBACK: ScheduleData = { day1: SCHEDULE_DAY1, day2: SCHEDULE_DAY2 };
 
+type ScheduleView = 'sessions' | 'oral' | 'poster';
+
+const VIEWS: { key: ScheduleView; label: string }[] = [
+  { key: 'sessions', label: 'Sessions' },
+  { key: 'oral', label: 'Oral' },
+  { key: 'poster', label: 'Poster' },
+];
+
 export function ScheduleScreen() {
+  const [view, setView] = useState<ScheduleView>('sessions');
   const [activeDay, setActiveDay] = useState('day1');
   const schedule = useRemoteData('schedule.json', SCHEDULE_FALLBACK, isValidScheduleData);
 
@@ -29,15 +39,22 @@ export function ScheduleScreen() {
     <Screen>
       <StatusBar style="dark" />
       <ScreenHeader eyebrow="Program" title="Conference Schedule" />
-      <DayToggle options={DAYS} active={activeDay} onChange={setActiveDay} />
-      <FlatList
-        data={day.sessions}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <SessionCard session={item} />}
-        ListHeaderComponent={<View style={styles.listSpacer} />}
-        ListFooterComponent={<Legend />}
-        contentContainerStyle={styles.listContent}
-      />
+      <DayToggle options={VIEWS} active={view} onChange={(key) => setView(key as ScheduleView)} />
+      {view === 'sessions' ? (
+        <>
+          <DayToggle options={DAYS} active={activeDay} onChange={setActiveDay} />
+          <FlatList
+            data={day.sessions}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <SessionCard session={item} />}
+            ListHeaderComponent={<View style={styles.listSpacer} />}
+            ListFooterComponent={<Legend />}
+            contentContainerStyle={styles.listContent}
+          />
+        </>
+      ) : (
+        <PresentationsPanel kind={view} />
+      )}
     </Screen>
   );
 }

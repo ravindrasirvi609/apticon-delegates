@@ -4,6 +4,7 @@ import { KNOWN_ICON_KEYS } from '@/utils/icon-map';
 import type {
   ScheduleData,
   SpeakersData,
+  PresentationsData,
   CommitteeData,
   VenueData,
   EventData,
@@ -84,6 +85,47 @@ function isValidSpeaker(item: unknown): boolean {
 export function isValidSpeakersData(data: unknown): data is SpeakersData {
   if (!isObj(data)) return false;
   return Array.isArray(data.speakers) && data.speakers.length > 0 && data.speakers.every(isValidSpeaker);
+}
+
+// ---------- Oral & Poster presentations ----------
+const PRESENTATION_DAYS = new Set(['Day 1', 'Day 2']);
+
+function isValidPresentationBase(item: Record<string, unknown>): boolean {
+  return (
+    isNonEmptyStr(item.code) &&
+    isNonEmptyStr(item.author) &&
+    isNonEmptyStr(item.title) &&
+    isStr(item.affiliation) &&
+    isStr(item.subject) &&
+    isNonEmptyStr(item.day) &&
+    PRESENTATION_DAYS.has(item.day) &&
+    isNonEmptyStr(item.date) &&
+    isNonEmptyStr(item.time)
+  );
+}
+
+function isValidOral(item: unknown): boolean {
+  return (
+    isObj(item) &&
+    isValidPresentationBase(item) &&
+    isNonEmptyStr(item.slot) &&
+    isNonEmptyStr(item.hall) &&
+    typeof item.isOnline === 'boolean'
+  );
+}
+
+function isValidPoster(item: unknown): boolean {
+  return isObj(item) && isValidPresentationBase(item);
+}
+
+// Codes are not checked for uniqueness: the source numbering repeats a few poster codes for
+// different people, and rejecting the whole file over that would hide the entire schedule.
+export function isValidPresentationsData(data: unknown): data is PresentationsData {
+  if (!isObj(data)) return false;
+  return (
+    Array.isArray(data.oral) && data.oral.length > 0 && data.oral.every(isValidOral) &&
+    Array.isArray(data.poster) && data.poster.length > 0 && data.poster.every(isValidPoster)
+  );
 }
 
 // ---------- Committee ----------

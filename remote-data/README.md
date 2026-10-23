@@ -118,3 +118,40 @@ A person who speaks in several sessions is **one** entry with several
 `appearances`. The seeded list was transcribed from the scientific schedule
 PDF (revised 19-10-26) together with `schedule.json`; when a session or its
 speakers change, update both files.
+
+## Oral & Poster presentations
+
+`presentations.json` is `{ "oral": [ ... ], "poster": [ ... ] }` and powers the
+**Oral** and **Poster** views on the Schedule tab (search by code, presenter,
+title or institution, plus slot / hall / day / subject filters). One
+presentation per line, in the order the app shows them.
+
+Every item has `code`, `author`, `title`, `affiliation`, `subject`, `day`
+(`"Day 1"` or `"Day 2"`), `date` (e.g. `"24 Oct 2026"`) and `time` (e.g.
+`"2:30 PM – 3:30 PM"`). Oral items also need `slot` (e.g. `"Slot 1"`), `hall`
+(e.g. `"Oral Hall 1"`) and `isOnline` (`true` / `false`, a real boolean). An
+empty `oral` or `poster` list, a missing field, or a `day` other than the two
+above makes the whole file get ignored.
+
+- **Codes may repeat.** The source numbering reuses a couple of poster codes
+  for different people (`P-PL-184`, `P-PT-273`), so codes are not required to
+  be unique.
+- **Subjects** get a short chip label from `src/utils/presentation-filter.ts`;
+  a brand-new subject still works, it just shows its full name on the chip.
+- **The bundled offline copy is this file.** The app imports
+  `presentations.json` at build time as its fallback, so a release always ships
+  with the schedule as it stood in the repo.
+
+The file was generated from the website's `lib/presentation-schedules.json`
+(apticon-2026 repo), which has extraction noise (dates like `24thOct2026`,
+times like `10:00AMto 12:00Noon`, oral titles split over two rows). To rebuild it
+after the website data changes, run from the repo root:
+
+```
+node scripts/build-presentations.js <path-to>/apticon-2026/lib/presentation-schedules.json
+```
+
+The script cleans the dates and times, merges the split oral rows and rewrites
+`presentations.json`; an unrecognised time makes it stop with an error rather
+than ship a bad value. Small fixes (a typo in a title, a hall change) are fine to
+make directly in `presentations.json` on GitHub, but a rebuild overwrites them.

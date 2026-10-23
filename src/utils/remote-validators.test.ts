@@ -5,6 +5,7 @@ import {
   isValidVenueData,
   isValidEventData,
   isValidSponsorsData,
+  isValidPresentationsData,
 } from './remote-validators';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -19,6 +20,8 @@ const venueJson = require('../../remote-data/venue.json');
 const eventJson = require('../../remote-data/event.json');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const sponsorsJson = require('../../remote-data/sponsors.json');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const presentationsJson = require('../../remote-data/presentations.json');
 
 describe('isValidScheduleData', () => {
   it('accepts the real seeded schedule.json', () => {
@@ -179,5 +182,35 @@ describe('isValidSponsorsData', () => {
     expect(isValidSponsorsData({ ...sponsorsJson, coAssociates: [{ ...base, name: '' }] })).toBe(false);
     expect(isValidSponsorsData({ ...sponsorsJson, coAssociates: [{ ...base, logo: 'rungta.png' }] })).toBe(false);
     expect(isValidSponsorsData({ ...sponsorsJson, coAssociates: [{ name: 'X' }] })).toBe(false);
+  });
+});
+
+describe('isValidPresentationsData', () => {
+  const oral = presentationsJson.oral[0];
+  const poster = presentationsJson.poster[0];
+
+  it('accepts the real seeded presentations.json', () => {
+    expect(isValidPresentationsData(presentationsJson)).toBe(true);
+  });
+
+  it('rejects a non-object or a missing / empty list', () => {
+    expect(isValidPresentationsData(null)).toBe(false);
+    expect(isValidPresentationsData({ oral: presentationsJson.oral })).toBe(false);
+    expect(isValidPresentationsData({ ...presentationsJson, poster: [] })).toBe(false);
+  });
+
+  it('rejects an oral item without a code, title, hall, slot or a boolean isOnline', () => {
+    for (const bad of [{ code: '' }, { title: '' }, { hall: '' }, { slot: undefined }, { isOnline: 'no' }]) {
+      expect(isValidPresentationsData({ ...presentationsJson, oral: [{ ...oral, ...bad }] })).toBe(false);
+    }
+  });
+
+  it('rejects a poster item with an unknown day or a missing time', () => {
+    expect(isValidPresentationsData({ ...presentationsJson, poster: [{ ...poster, day: 'Day 3' }] })).toBe(false);
+    expect(isValidPresentationsData({ ...presentationsJson, poster: [{ ...poster, time: '' }] })).toBe(false);
+  });
+
+  it('allows a repeated code, because the source numbering repeats a few', () => {
+    expect(isValidPresentationsData({ ...presentationsJson, poster: [poster, poster] })).toBe(true);
   });
 });
