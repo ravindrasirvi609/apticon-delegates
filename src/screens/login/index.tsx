@@ -180,7 +180,7 @@ export function LoginScreen() {
             <View style={styles.poweredBy}>
               <Text style={styles.poweredByLabel}>Powered by</Text>
               <Image
-                source={require('../../../assets/sponsors/opf.png')}
+                source={require('../../../assets/sponsors/opf.jpg')}
                 style={styles.opfLogo}
                 resizeMode="contain"
                 accessibilityLabel="Operant Pharmacy Federation logo"
@@ -211,7 +211,8 @@ const styles = StyleSheet.create({
   body: { paddingHorizontal: spacing.lg, paddingTop: spacing.xl, gap: spacing.lg },
   poweredBy: { alignItems: 'center', gap: spacing.sm, marginTop: spacing.md },
   poweredByLabel: { ...textStyles.eyebrow, color: colors.text.muted, textAlign: 'center' },
-  opfLogo: { width: 96, height: 96, borderRadius: radius.md },
+  // The OPF artwork is portrait (~3:4) with the wordmark included, so size it by width.
+  opfLogo: { width: 112, aspectRatio: 541 / 720, borderRadius: radius.md },
   poweredByName: {
     fontFamily: fontFamily.sansMedium,
     fontSize: fontSize.sm,

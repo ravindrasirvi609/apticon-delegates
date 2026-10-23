@@ -23,6 +23,6 @@ export const CO_ASSOCIATES: Sponsor[] = [
 ];
 
 export const POWERED_BY: Sponsor[] = [
-  { name: 'Operant Pharmacy Federation', logo: require('../../assets/sponsors/opf.png') },
+  { name: 'Operant Pharmacy Federation', logo: require('../../assets/sponsors/opf.jpg') },
   { name: 'GPAT Discussion Center', logo: require('../../assets/sponsors/gpat.png') },
 ];
