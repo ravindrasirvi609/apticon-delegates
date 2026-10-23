@@ -122,6 +122,7 @@ export const SPEAKERS: Speaker[] = [
   {
     name: 'Mr. Manoj Karwa',
     designation: 'Head – Clinical Trials & Pharmacovigilance',
+    institution: 'Auriga Research Pvt Ltd',
     appearances: [{ role: 'panelist', session: 'Panel Discussion I', sessionId: 'd1-17' }],
   },
   {
@@ -161,12 +162,6 @@ export const SPEAKERS: Speaker[] = [
     appearances: [{ role: 'panelist', session: 'Panel Discussion II — Women Forum', sessionId: 'd2-12' }],
   },
   {
-    name: 'Dr. Arun S. Bhatnagar',
-    designation: 'Director General and Group Advisor',
-    institution: 'Sparsh and IIST Group of Institutions',
-    appearances: [{ role: 'panelist', session: 'Panel Discussion III', sessionId: 'd2-14' }],
-  },
-  {
     name: 'Dr. Lovleen Kumar',
     designation: 'Associate Director, Analytical Research & Development',
     institution: 'Dr. Reddy\'s Laboratories, Hyderabad',
@@ -194,6 +189,18 @@ export const SPEAKERS: Speaker[] = [
     name: 'Prof. Umesh Patil',
     designation: 'Department of Pharmaceutical Sciences',
     institution: 'Dr. Harisingh Gour Vishwavidyalaya',
+    appearances: [{ role: 'panelist', session: 'Panel Discussion III', sessionId: 'd2-14' }],
+  },
+  {
+    name: 'Mr. Rahul Tiwari',
+    designation: 'Vice President',
+    institution: 'Chhattisgarh State Pharmacy Council, Raipur',
+    appearances: [{ role: 'panelist', session: 'Panel Discussion III', sessionId: 'd2-14' }],
+  },
+  {
+    name: 'Dr. H. N. More',
+    designation: 'Principal',
+    institution: 'Bharati Vidyapeeth College of Pharmacy, Kolhapur',
     appearances: [{ role: 'panelist', session: 'Panel Discussion III', sessionId: 'd2-14' }],
   },
   {
@@ -244,10 +251,16 @@ export const SPEAKERS: Speaker[] = [
     appearances: [{ role: 'cochair', session: 'Dr. G. P. Srivastava Memorial Lecture', sessionId: 'd1-19' }],
   },
   {
+    name: 'Prof. Raman Dang',
+    designation: 'Principal',
+    institution: 'Krupanidhi College of Pharmacy, Bangalore',
+    appearances: [{ role: 'chair', session: 'Shri A. Mishra Memorial Lecture in Pharmaceutical Technology', sessionId: 'd1-20' }],
+  },
+  {
     name: 'Dr. Akhlesh K. Singhai',
     designation: 'Director, School of Pharmacy',
     institution: 'LNCT University, Bhopal',
-    appearances: [{ role: 'chair', session: 'Shri A. Mishra Memorial Lecture in Pharmaceutical Technology', sessionId: 'd1-20' }],
+    appearances: [{ role: 'cochair', session: 'Shri A. Mishra Memorial Lecture in Pharmaceutical Technology', sessionId: 'd1-20' }],
   },
   {
     name: 'Dr. K. Ravi Shankar',
@@ -276,6 +289,12 @@ export const SPEAKERS: Speaker[] = [
   {
     name: 'Dr. K. Venkat Ramanna',
     designation: 'President, APTI AP State Branch',
+    appearances: [{ role: 'cochair', session: '54th IPC Trust Sponsored Lecture', sessionId: 'd2-13' }],
+  },
+  {
+    name: 'Prof. Ravindra D. Hiremath',
+    designation: 'Principal',
+    institution: 'Future Institute of Pharmacy, Future University, U.P.',
     appearances: [{ role: 'cochair', session: '54th IPC Trust Sponsored Lecture', sessionId: 'd2-13' }],
   },
 ];

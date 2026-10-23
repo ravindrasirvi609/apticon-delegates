@@ -196,6 +196,7 @@
     {
       "name": "Mr. Manoj Karwa",
       "designation": "Head – Clinical Trials & Pharmacovigilance",
+      "institution": "Auriga Research Pvt Ltd",
       "appearances": [
         {
           "role": "panelist",
@@ -277,18 +278,6 @@
       ]
     },
     {
-      "name": "Dr. Arun S. Bhatnagar",
-      "designation": "Director General and Group Advisor",
-      "institution": "Sparsh and IIST Group of Institutions",
-      "appearances": [
-        {
-          "role": "panelist",
-          "session": "Panel Discussion III",
-          "sessionId": "d2-14"
-        }
-      ]
-    },
-    {
       "name": "Dr. Lovleen Kumar",
       "designation": "Associate Director, Analytical Research & Development",
       "institution": "Dr. Reddy's Laboratories, Hyderabad",
@@ -340,6 +329,30 @@
       "name": "Prof. Umesh Patil",
       "designation": "Department of Pharmaceutical Sciences",
       "institution": "Dr. Harisingh Gour Vishwavidyalaya",
+      "appearances": [
+        {
+          "role": "panelist",
+          "session": "Panel Discussion III",
+          "sessionId": "d2-14"
+        }
+      ]
+    },
+    {
+      "name": "Mr. Rahul Tiwari",
+      "designation": "Vice President",
+      "institution": "Chhattisgarh State Pharmacy Council, Raipur",
+      "appearances": [
+        {
+          "role": "panelist",
+          "session": "Panel Discussion III",
+          "sessionId": "d2-14"
+        }
+      ]
+    },
+    {
+      "name": "Dr. H. N. More",
+      "designation": "Principal",
+      "institution": "Bharati Vidyapeeth College of Pharmacy, Kolhapur",
       "appearances": [
         {
           "role": "panelist",
@@ -444,12 +457,24 @@
       ]
     },
     {
+      "name": "Prof. Raman Dang",
+      "designation": "Principal",
+      "institution": "Krupanidhi College of Pharmacy, Bangalore",
+      "appearances": [
+        {
+          "role": "chair",
+          "session": "Shri A. Mishra Memorial Lecture in Pharmaceutical Technology",
+          "sessionId": "d1-20"
+        }
+      ]
+    },
+    {
       "name": "Dr. Akhlesh K. Singhai",
       "designation": "Director, School of Pharmacy",
       "institution": "LNCT University, Bhopal",
       "appearances": [
         {
-          "role": "chair",
+          "role": "cochair",
           "session": "Shri A. Mishra Memorial Lecture in Pharmaceutical Technology",
           "sessionId": "d1-20"
         }
@@ -506,6 +531,18 @@
     {
       "name": "Dr. K. Venkat Ramanna",
       "designation": "President, APTI AP State Branch",
+      "appearances": [
+        {
+          "role": "cochair",
+          "session": "54th IPC Trust Sponsored Lecture",
+          "sessionId": "d2-13"
+        }
+      ]
+    },
+    {
+      "name": "Prof. Ravindra D. Hiremath",
+      "designation": "Principal",
+      "institution": "Future Institute of Pharmacy, Future University, U.P.",
       "appearances": [
         {
           "role": "cochair",
